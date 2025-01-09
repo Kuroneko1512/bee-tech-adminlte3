@@ -18,17 +18,16 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    return view('admin.index');
+    return view('index');
 });
 // Admin Routes
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/login', [AdminAuthController::class, 'login']);
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
-
+    Route::get('/login', [AdminAuthController::class, 'showLoginForm'])->name('admins.login');
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('admins.auth');
+    
     Route::middleware('auth:admin')->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-        // Thêm các routes admin khác
+        Route::get('/index', [AdminController::class, 'index'])->name('admins.index');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admins.logout');
     });
 });
 
@@ -38,6 +37,7 @@ Route::post('/login', [UserAuthController::class, 'login']);
 Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth:web')->group(function () {
-    // Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-    // Thêm các routes user khác
+    Route::get('/user/index', function() {
+        return view('user.index');
+    })->name('user.index');
 });

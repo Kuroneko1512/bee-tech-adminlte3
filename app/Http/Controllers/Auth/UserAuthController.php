@@ -9,7 +9,7 @@ class UserAuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('auth.login');
+        return view('user.auth.login');
     }
 
     public function login(Request $request)
@@ -21,7 +21,7 @@ class UserAuthController extends Controller
 
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard');
+            return redirect()->intended('user/index');
         }
 
         return back()->withErrors([
