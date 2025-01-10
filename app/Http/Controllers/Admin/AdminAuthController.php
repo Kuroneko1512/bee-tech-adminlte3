@@ -1,27 +1,29 @@
 <?php
-namespace App\Http\Controllers\Auth;
+
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserAuthController extends Controller
+class AdminAuthController extends Controller
 {
     public function showLoginForm()
     {
-        return view('user.auth.login');
+        return view('admin.auth.login');
     }
 
     public function login(Request $request)
     {
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        if (Auth::guard('web')->attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('user.index');
+            return redirect()->route('admins.index');
         }
 
         return back()->withErrors([
@@ -31,9 +33,9 @@ class UserAuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('user.login');
+        return redirect()->route('admins.login');
     }
 }
