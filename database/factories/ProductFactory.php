@@ -23,7 +23,7 @@ class ProductFactory extends Factory
             'name' => fake()->word(),
             'stock' => fake()->numberBetween(0, 1000),
             'avatar' => fake()->imageUrl(),
-            'expired_date' => fake()->dateTimeBetween('now', '+2 years'),
+            'expired_at' => fake()->dateTimeBetween('now', '+2 years'),
             'category_id' => ProductCategory::inRandomOrder()->first()->id,
             'flag_delete' => 0,
         ];

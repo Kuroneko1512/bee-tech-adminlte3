@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\UserAuthController;
 use Illuminate\Support\Facades\Route;
@@ -32,9 +33,21 @@ Route::prefix('admin')->group(function () {
             return view('admin.index');
         })->name('admins.index');
 
-        Route::get('users', [UserController::class, 'index'])->name('admin.users');
+        // User
+        Route::resource('users', UserController::class);
+        // Route::get('users', [UserController::class, 'index'])->name('admin.users');
+        // Route::get('users/create', [UserController::class, 'create'])->name('admin.users.create');
+
         // Product Category
-        Route::get('categories', [ProductCategoryController::class, 'index'])->name('admin.categories');
+        Route::resource('categories', ProductCategoryController::class);
+        // Route::get('categories', [ProductCategoryController::class, 'index'])->name('admin.categories');
+        // Route::get('categories/create', [ProductCategoryController::class, 'create'])->name('admin.categories.create');
+
+        // Product
+        Route::resource('products', ProductController::class);
+        // Route::get('products', [ProductController::class, 'index'])->name('admin.products');
+        // Route::get('products/create', [ProductController::class, 'create'])->name('admin.products.create');
+        
     // });
 });
 

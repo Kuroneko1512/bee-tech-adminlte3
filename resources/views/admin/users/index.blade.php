@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('title')
-    ListUsers
+    List Users
 @endsection
 
 @section('contents')
@@ -35,30 +35,41 @@
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->user_name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ $user->birthday }}</td>
+                                    <td>{{ $user->birthday->format('d/m/Y') }}</td>
                                     <td>
                                         <a href="#" class="d-flex align-items-center text-secondary">
-                                            <img src="" alt="User Image" class="mr-2">
-                                            <span>{{$user->last_name }} {{ $user->first_name }}</span>
+                                            <img src="{{ $user->avatar ? Storage::url($user->avatar) : Storage::url('default/avatar.jpg') }}"
+                                                alt="{{ $user->last_name }} {{ $user->first_name }}"
+                                                class="img-fluid img-circle img-md elevation-2" width="35">
+                                            <span class="ml-2">{{ $user->last_name }} {{ $user->first_name }}</span>
                                         </a>
                                     </td>
+
+                                    {{-- <td>
+                                        <a href="#" class="d-flex align-items-center text-secondary">
+                                            <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('storage/default/avatar.jpg') }}"
+                                                alt="{{ $user->last_name }} {{ $user->first_name }}"
+                                                class="img-fluid img-circle img-md elevation-2" width="35">
+                                            <span class="ml-2">{{ $user->last_name }} {{ $user->first_name }}</span>
+                                        </a>
+                                    </td> --}}
                                     {{-- <td>Last Name</td> --}}
                                     <td>
                                         @if ($user->status == 'active')
-                                        <span class="badge badge-pill badge-success">Active</span>
+                                            <span class="badge badge-pill badge-success">Active</span>
                                         @else
-                                        <span class="badge badge-pill badge-danger">Inactive</span>
-                                        @endif                            
+                                            <span class="badge badge-pill badge-danger">Inactive</span>
+                                        @endif
                                     </td>
-                                    <td>{{ $user->created_at }}</td>
-                                    <td>{{ $user->updated_at }}</td>
+                                    <td>{{ $user->created_at->format('d/m/Y H:i:s') }}</td>
+                                    <td>{{ $user->updated_at->format('d/m/Y H:i:s') }}</td>
                                     <td>
                                         <a href="#" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                                         <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
-                                                    </tbody>
+                        </tbody>
                         <tfoot>
                             <tr>
                                 <th>ID</th>

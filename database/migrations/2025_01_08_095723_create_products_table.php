@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name',255);
             $table->integer('stock');
             $table->string('avatar',255);
-            $table->date('expired_date');
+            $table->date('expired_at');
             $table->foreignId('category_id')->constrained('product_categories');
             $table->boolean('flag_delete')->default(0);
             $table->timestamps();

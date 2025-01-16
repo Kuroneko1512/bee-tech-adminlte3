@@ -16,11 +16,19 @@ class Product extends Model
         'name',
         'stock',
         'avatar',
-        'expired_date',
+        'expired_at',
         'category_id',
         'flag_delete',
     ];
-    
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'expired_at' => 'date',
+        'flag_delete' => 'boolean',
+    ];
 
     public function category(){
         return $this->belongsTo(ProductCategory::class, 'category_id');

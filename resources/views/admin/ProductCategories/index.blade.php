@@ -33,8 +33,8 @@
                                     <td>{{ $category->name }}</td>
                                     <td>{{ $category->parent ? $category->parent->name : '' }}</td>                                   
                                     {{-- <td>Last Name</td> --}}                                   
-                                    <td>{{ $category->created_at }}</td>
-                                    <td>{{ $category->updated_at }}</td>
+                                    <td>{{ $category->created_at->format('d/m/Y H:i:s') }}</td>
+                                    <td>{{ $category->updated_at->format('d/m/Y H:i:s') }}</td>
                                     <td>
                                         <a href="#" class="btn btn-primary"><i class="fas fa-edit"></i></a>
                                         <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
