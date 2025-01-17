@@ -7,7 +7,7 @@
     <title>Admin | @yield('title', 'Dashboard') </title>
 
     @include('admin.layouts.partials.styles')
-    {{-- @stack('styles') --}}
+    @stack('styles')
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -61,10 +61,8 @@
             <!-- /.content-header -->
 
             <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
-                    @yield('contents')
-                </div><!-- /.container-fluid -->
+            <section class="content">                
+                @yield('contents')
             </section>
             <!-- /.content -->
 
@@ -84,7 +82,8 @@
     <!-- ./wrapper -->
 
     @include('admin.layouts.partials.scripts')
-    {{-- @stack('scripts') Nơi đặt các script riêng --}}
+    {{-- Nơi đặt các script riêng --}}
+    @stack('scripts') 
 </body>
 
 </html>
