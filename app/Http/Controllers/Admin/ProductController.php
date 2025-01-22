@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ProductsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
@@ -9,8 +10,11 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Traits\UploadFileTrait;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Mpdf\Mpdf;
 
 class ProductController extends Controller
 {
@@ -18,12 +22,48 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest('id')->paginate(15);
+        $query = Product::with('category');
+
+        // Search by name or category
+        $search = $request->search;
+        $stockRange = $request->stock_range;
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('category', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Search by stock range
+        if ($stockRange) {
+            switch ($stockRange) {
+                case 'less_10':
+                    $query->where('stock', '<', 10);
+                    break;
+                case '10_100':
+                    $query->whereBetween('stock', [10, 100]);
+                    break;
+                case '100_200':
+                    $query->whereBetween('stock', [100, 200]);
+                    break;
+                case 'more_200':
+                    $query->where('stock', '>', 200);
+                    break;
+            }
+        }
+
+        $products = $query->latest('id')->paginate(15);
+        $products->appends(['search' => $search, 'stock_range' => $stockRange]);
+        // $products = Product::latest('id')->paginate(15);
         Debugbar::info('Products List:');
         Debugbar::info($products->items());
-        return view('admin.products.index', compact('products'));
+        // return view('admin.products.index', compact('products'));
+        return view('admin.products.index', compact('products', 'search', 'stockRange'));
     }
 
     /**
@@ -93,10 +133,10 @@ class ProductController extends Controller
 
             Debugbar::info('Request Data:');
             Debugbar::info($data);
-            
+
             // So sánh và chỉ giữ lại các trường có thay đổi
-            foreach($data as $key => $value) {
-                if($value === $product->$key) {
+            foreach ($data as $key => $value) {
+                if ($value === $product->$key) {
                     unset($data[$key]);
                 }
             }
@@ -110,8 +150,8 @@ class ProductController extends Controller
 
             Debugbar::info('Changed Data:');
             Debugbar::info($data);
-            
-            if (!empty($data)) {                
+
+            if (!empty($data)) {
                 DB::enableQueryLog();
 
                 $product->update($data);
@@ -119,11 +159,11 @@ class ProductController extends Controller
                 Debugbar::info('Query Log:');
                 Debugbar::info(DB::getQueryLog());
 
-                return back()->with('success', 'Cập nhật thành công');
+                return redirect()->route('products.index')
+                    ->with('success', 'Cập nhật thành công');
             }
 
             return back()->with('info', 'Không có thông tin nào được thay đổi');
-
         } catch (\Throwable $e) {
             Debugbar::error('Update Product Error:');
             Debugbar::error($e->getMessage());
@@ -141,16 +181,16 @@ class ProductController extends Controller
         try {
             Debugbar::info('Delete Product:');
             Debugbar::info($product->toArray());
-            
+
             if ($product->avatar) {
                 Storage::delete($product->avatar);
                 Debugbar::info('Delete Product Avatar:');
                 Debugbar::info($product->avatar);
             }
-            
+
             $product->delete();
             Debugbar::info('Product Deleted Successfully');
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Xóa sản phẩm thành công'
@@ -162,6 +202,41 @@ class ProductController extends Controller
                 'success' => false,
                 'message' => 'Xóa sản phẩm thất bại'
             ]);
+        }
+    }
+
+    public function download($type)
+    {
+        $products = Product::with('category')->get(); // Eager load category
+
+        switch ($type) {
+            case 'csv':
+                return Excel::download(new ProductsExport($products), 'products.csv');
+            case 'excel':
+                return Excel::download(new ProductsExport($products), 'products.xlsx');
+            case 'pdf':
+                $mpdf = new Mpdf([
+                    'mode' => 'utf-8',
+                    'format' => 'A4',
+                    'orientation' => 'P',
+                    'tempDir' => storage_path('app/mpdf'), // Đảm bảo thư mục này tồn tại
+                    'fontDir' => [
+                        base_path('resources/fonts/dejavu'),
+                    ],
+                    'fontdata' => [
+                        'dejavu' => [
+                            'R' => 'DejaVuSans.ttf', // Regular
+                            'B' => 'DejaVuSans-Bold.ttf', // Bold
+                            'I' => 'DejaVuSans-Italic.ttf', // Italic
+                            'BI' => 'DejaVuSans-BoldItalic.ttf', // Bold Italic
+                        ]
+                    ]
+                ]);
+                $html = view('exports.productsPdf', compact('products'))->render();
+                $mpdf->WriteHTML($html);
+                return $mpdf->Output('products.pdf', 'D');
+            default:
+                abort(404);
         }
     }
 }

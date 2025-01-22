@@ -14,6 +14,10 @@
 <script src="{{ asset('libs/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js') }}"></script>
 <!-- bs-custom-file-input -->
 <script src="{{ asset('libs/plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+<!-- SweetAlert2 -->
+<script src="{{ asset('libs/plugins/sweetalert2/sweetalert2.min.js') }}"></script>
+<!-- Toastr -->
+<script src="{{ asset('libs/plugins/toastr/toastr.min.js') }}"></script>
 <!-- ChartJS -->
 <script src="{{ asset('libs/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->
@@ -55,14 +59,11 @@
 {{-- <script src="{{ asset('libs/dist/js/pages/dashboard.js') }}"></script> --}}
 
 <!-- Page specific script -->
-<script>   
-
+<script>
     $(function() {
 
         //Initialize Select2 Elements
         $('.select2').select2()
 
     });
-
-
 </script>

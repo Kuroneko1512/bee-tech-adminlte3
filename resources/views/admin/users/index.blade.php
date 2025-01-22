@@ -13,8 +13,51 @@
                     <div class="card-header">
                         <h3 class="card-title">List Users</h3>
                     </div>
+
+                    <!-- Thêm thông báo ở trên danh sách người dùng -->
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>{{ session('success') }}</strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>{{ session('error') }}</strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if (session('info'))
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <strong>{{ session('info') }}</strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
                     <!-- /.card-header -->
                     <div class="card-body">
+                        <!-- Thêm form tìm kiếm -->
+                        <form method="GET" action="{{ route('users.index') }}" class="mb-4">
+                            @csrf
+                            <div class="input-group">
+                                <input type="text" name="keyword" class="form-control"
+                                    placeholder="Tìm kiếm theo tên, username hoặc email..."
+                                    value="{{ request('keyword') }}">
+                                <div class="input-group-append">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fas fa-search"></i> Tìm kiếm
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
                         <table id="example1" class="table table-bordered table-striped table-responsive table-hover">
                             <thead>
                                 <tr>
@@ -22,7 +65,7 @@
                                     <th>User Name</th>
                                     <th>Email</th>
                                     <th>Birthday</th>
-                                    <th>First Name</th>
+                                    <th>Name</th>
                                     {{-- <th>Last Name</th> --}}
                                     <th>Status</th>
                                     <th>Create Date</th>
@@ -65,8 +108,12 @@
                                         <td>{{ $user->created_at->format('d/m/Y H:i:s') }}</td>
                                         <td>{{ $user->updated_at->format('d/m/Y H:i:s') }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-primary"><i class="fas fa-edit"></i></a>
-                                            <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a>
+                                            {{-- <a href="#" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                                            <a href="#" class="btn btn-danger"><i class="fas fa-trash"></i></a> --}}
+                                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary"><i
+                                                    class="fas fa-edit"></i></a>
+                                            <button class="btn btn-danger delete-user" data-id="{{ $user->id }}"><i
+                                                    class="fas fa-trash"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -77,7 +124,7 @@
                                     <th>User Name</th>
                                     <th>Email</th>
                                     <th>Birthday</th>
-                                    <th>First Name</th>
+                                    <th>Name</th>
                                     {{-- <th>Last Name</th> --}}
                                     <th>Status</th>
                                     <th>Create Date</th>
@@ -97,3 +144,24 @@
         <!-- /.row -->
     </div><!-- /.container-fluid -->
 @endsection
+
+@push('scripts')
+    @include('admin.layouts.partials.scripts-delete-ajax')
+    <script>
+        $(function() {
+            $('.delete-user').on('click', function(e) {
+                e.preventDefault();
+
+                const userId = $(this).data('id'); // Lấy ID người dùng từ nút
+                const rowElement = $(this).closest('tr'); // Xác định hàng tương ứng
+
+                deleteRow('/admin/users/', rowElement, userId);
+            });
+
+            // Tự động ẩn alert sau 3 giây
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 3000);
+        });
+    </script>
+@endpush

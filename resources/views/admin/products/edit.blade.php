@@ -14,6 +14,32 @@
                         <h3 class="card-title">Update Product</h3>
                     </div>
                     <!-- /.card-header -->
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <strong>{{ session('success') }}</strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>{{ session('error') }}</strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if (session('info'))
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <strong>{{ session('info') }}</strong>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
                     <!-- form start -->
                     <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
@@ -97,7 +123,7 @@
                                     </div>
                                     <input type="text" class="form-control datetimepicker-input" name="expired_at"
                                         id="expired-date" data-target="#expired-date-datetimepicker"
-                                        value="{{ old('expired_at', $product->expired_at->format('d/m/Y')) }}">
+                                        value="{{ old('expired_at', optional($product->expired_at)->format('d/m/Y')) }}">
                                 </div>
                                 @error('expired_at')
                                     <div class="text-danger">{{ $message }}</div>

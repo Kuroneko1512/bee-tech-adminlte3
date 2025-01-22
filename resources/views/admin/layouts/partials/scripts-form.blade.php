@@ -1,4 +1,5 @@
 <script>
+    // Initialize DatetimePicker TempusDominus with Input Mask
     function initDatetimePicker(inputId, datetimepickerId, enableTime = false) {
         // Định nghĩa các định dạng
         const formats = enableTime ? {

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,9 +20,22 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest('id')->paginate(15);
+        // $users = User::latest('id')->paginate(15);
+        $query = User::query();
+
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where(function ($q) use ($keyword) {
+                $q->where('first_name', 'like', "%{$keyword}%")
+                    ->orWhere('last_name', 'like', "%{$keyword}%")
+                    ->orWhere('user_name', 'like', "%{$keyword}%")
+                    ->orWhere('email', 'like', "%{$keyword}%");
+            });
+        }
+
+        $users = $query->latest('id')->paginate(15);
         Debugbar::info('Users List:');
         Debugbar::info($users->items());
         return view('admin.users.index', compact('users'));
@@ -98,22 +112,22 @@ class UserController extends Controller
     {
         try {
             $data = $request->all();
-            
+
             Debugbar::info('Request Data:');
             Debugbar::info($data);
-            
+
             // So sánh và chỉ giữ lại các trường có thay đổi
-            foreach($data as $key => $value) {
-                if($key === 'password') {
-                    if(!$value) {
+            foreach ($data as $key => $value) {
+                if ($key === 'password') {
+                    if (!$value) {
                         unset($data[$key]);
                     } else {
                         $data[$key] = Hash::make($value);
                     }
                     continue;
                 }
-                
-                if($value === $user->$key) {
+
+                if ($value === $user->$key) {
                     unset($data[$key]);
                 }
             }
@@ -135,11 +149,11 @@ class UserController extends Controller
                 Debugbar::info('Query executed:');
                 Debugbar::info(DB::getQueryLog());
 
-                return back()->with('success', 'Cập nhật thành công');
+                return redirect()->route('users.index')
+                    ->with('success', 'Cập nhật thành công');
             }
 
             return back()->with('info', 'Không có thông tin nào được thay đổi');
-
         } catch (\Throwable $e) {
             Debugbar::error('Update User Error:');
             Debugbar::error($e->getMessage());
@@ -173,7 +187,7 @@ class UserController extends Controller
             ]);
         } catch (\Throwable $e) {
             Debugbar::error('Delete User Error:');
-            Debugbar::error( $e->getMessage());
+            Debugbar::error($e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Xóa người dùng thất bại'
