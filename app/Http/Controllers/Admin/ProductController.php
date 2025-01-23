@@ -8,6 +8,7 @@ use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Services\UploadService;
 use App\Traits\UploadFileTrait;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Http\Request;
@@ -19,6 +20,12 @@ use Mpdf\Mpdf;
 class ProductController extends Controller
 {
     use UploadFileTrait;
+    protected $uploadService;
+
+    public function __construct(UploadService $uploadService)
+    {
+        $this->uploadService = $uploadService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -86,7 +93,11 @@ class ProductController extends Controller
             Debugbar::info('Request Data:');
             Debugbar::info($data);
 
-            $data['avatar'] = $this->handleUploadFile($request, 'avatar', 'products');
+            // $data['avatar'] = $this->handleUploadFile($request, 'avatar', 'products');
+            $data['avatar'] = $this->uploadService->UploadImage(
+                $request->file('avatar'), 
+                'products'
+            );
 
             DB::enableQueryLog();
             Product::create($data);
