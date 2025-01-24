@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
+use App\Models\ProductCategory;
+use App\Services\DeleteService;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
-use App\Models\ProductCategory;
-use Barryvdh\Debugbar\Facades\Debugbar;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProductCategoryController extends Controller
 {
+    protected $deleteService;
+
+    public function __construct(DeleteService $deleteService)
+    {
+        $this->deleteService = $deleteService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -120,7 +127,8 @@ class ProductCategoryController extends Controller
         try {
             Debugbar::info('Delete Product Category:');
             Debugbar::info($category->toArray());
-            $category->delete();
+            // $category->delete();
+            $this->deleteService->deleteCategory($category);
             
             return response()->json([
                 'success' => true,

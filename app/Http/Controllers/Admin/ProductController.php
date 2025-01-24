@@ -2,29 +2,32 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\ProductsExport;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Product\StoreProductRequest;
-use App\Http\Requests\Product\UpdateProductRequest;
+use Mpdf\Mpdf;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Exports\ProductsExport;
 use App\Models\ProductCategory;
+use App\Services\DeleteService;
 use App\Services\UploadService;
 use App\Traits\UploadFileTrait;
-use Barryvdh\Debugbar\Facades\Debugbar;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
-use Mpdf\Mpdf;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 
 class ProductController extends Controller
 {
     use UploadFileTrait;
     protected $uploadService;
+    protected $deleteService;
 
-    public function __construct(UploadService $uploadService)
+    public function __construct(UploadService $uploadService, DeleteService $deleteService)
     {
         $this->uploadService = $uploadService;
+        $this->deleteService = $deleteService;
     }
     /**
      * Display a listing of the resource.
@@ -193,15 +196,18 @@ class ProductController extends Controller
             Debugbar::info('Delete Product:');
             Debugbar::info($product->toArray());
 
-            if ($product->avatar) {
-                Storage::delete($product->avatar);
-                Debugbar::info('Delete Product Avatar:');
-                Debugbar::info($product->avatar);
-            }
+            // if ($product->avatar) {
+            //     Storage::delete($product->avatar);
+            //     Debugbar::info('Delete Product Avatar:');
+            //     Debugbar::info($product->avatar);
+            // }
 
-            $product->delete();
+            // $product->delete();
+            $this->deleteService->deleteProduct($product);
             Debugbar::info('Product Deleted Successfully');
 
+            Debugbar::info('Delete Product Avatar:');
+                Debugbar::info($product->avatar);
             return response()->json([
                 'success' => true,
                 'message' => 'Xóa sản phẩm thành công'
