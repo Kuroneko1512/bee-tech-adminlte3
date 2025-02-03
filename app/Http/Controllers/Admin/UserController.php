@@ -4,15 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Models\User;
+use App\Mail\UserMail;
+use App\Jobs\ProcessEmail;
+use Illuminate\Http\Request;
 use App\Traits\UploadFileTrait;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
-use Barryvdh\Debugbar\Facades\Debugbar;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -70,12 +72,18 @@ class UserController extends Controller
 
             DB::enableQueryLog();
 
-            User::create($data);
+            $user = User::create($data);
 
             Debugbar::info('Query Log:');
             Debugbar::info(DB::getQueryLog());
 
-            return redirect()->route('users.index')
+            // Dispatch email job
+            ProcessEmail::dispatch(
+                new UserMail($user, 'created'),
+                $user->email
+            );
+
+            return redirect()->route(getRouteName('users.index'))
                 ->with('success', 'Thêm người dùng thành công');
         } catch (\Throwable $e) {
             Debugbar::error('Store User Error:');
@@ -149,7 +157,12 @@ class UserController extends Controller
                 Debugbar::info('Query executed:');
                 Debugbar::info(DB::getQueryLog());
 
-                return redirect()->route('users.index')
+                ProcessEmail::dispatch(
+                    new UserMail($user, 'updated'),
+                    $user->email
+                );
+
+                return redirect()->route(getRouteName('users.index'))
                     ->with('success', 'Cập nhật thành công');
             }
 

@@ -66,16 +66,16 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <div class="btn-group">
-                                    <a href="{{ route('products.create') }}" class="btn btn-primary">
+                                    <a href="{{ route(getRouteName('products.create')) }}" class="btn btn-primary">
                                         <i class="fas fa-plus"></i> Add Product
                                     </a>
-                                    <a href="{{ route('products.download', ['type' => 'excel']) }}" class="btn btn-success">
+                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'excel']) }}" class="btn btn-success">
                                         <i class="fas fa-file-excel"></i> Excel
                                     </a>
-                                    <a href="{{ route('products.download', ['type' => 'csv']) }}" class="btn btn-info">
+                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'csv']) }}" class="btn btn-info">
                                         <i class="fas fa-file-csv"></i> CSV
                                     </a>
-                                    <a href="{{ route('products.download', ['type' => 'pdf']) }}" class="btn btn-danger">
+                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'pdf']) }}" class="btn btn-danger">
                                         <i class="fas fa-file-pdf"></i> PDF
                                     </a>
                                     <button type="button" class="btn btn-secondary" onclick="window.print()">
@@ -84,7 +84,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <form action="{{ route('products.index') }}" method="GET">
+                                <form action="{{ route(getRouteName('products.index')) }}" method="GET">
                                     @csrf
                                     <div class="input-group mb-2">
                                         <input type="text" name="search" class="form-control"
@@ -148,7 +148,7 @@
                                             <td> {{ $product->created_at->format('d/m/Y H:i:s') }}</td>
                                             <td> {{ $product->updated_at->format('d/m/Y H:i:s') }}</td>
                                             <td>
-                                                <a href="{{ route('products.edit', $product->id) }}"
+                                                <a href="{{ route(getRouteName('products.edit'), $product->id) }}"
                                                     class="btn btn-primary"><i class="fas fa-edit"></i></a>
                                                 <button data-id="{{ $product->id }}"
                                                     class="btn btn-danger delete-product"><i
@@ -190,6 +190,8 @@
 @push('scripts')
     @include('admin.layouts.partials.scripts-delete-ajax')
     <script>
+        window.deleteUrl  = "{{ route(getRouteName('products.index')) }}/";
+
         $(function() {
             $('.delete-product').on('click', function(e) {
                 e.preventDefault();
@@ -197,7 +199,8 @@
                 const productId = $(this).data('id'); // Lấy ID người dùng từ nút
                 const rowElement = $(this).closest('tr'); // Xác định hàng tương ứng
 
-                deleteRow('/admin/products/', rowElement, productId);
+                // deleteRow('/admin/products/', rowElement, productId);
+                deleteRow(window.deleteUrl, rowElement, productId);
             });
 
             // Tự động ẩn alert sau 3 giây

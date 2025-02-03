@@ -22,7 +22,7 @@ class AdminAuthController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('admins.index');
+            return redirect()->route('admin.admins.index');
         }
 
         return back()->withErrors([
@@ -35,6 +35,6 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('admins.login');
+        return redirect()->route('admin.admins.login');
     }
 }

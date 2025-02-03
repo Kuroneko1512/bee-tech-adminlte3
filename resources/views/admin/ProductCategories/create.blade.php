@@ -16,7 +16,7 @@
                     <!-- /.card-header -->
                     <!-- form start -->
                     {{-- <form action="" method="POST" enctype="multipart/form-data"> --}}
-                    <form action="{{ route('categories.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route(getRouteName('categories.store')) }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <div class="card-body">

@@ -17,7 +17,7 @@
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form action="{{ route('users.login.post') }}" method="POST">
+                <form action="{{ route('user.users.login.post') }}" method="POST">
                     @csrf
                     <div class="input-group mb-3">
                         <input type="email" name="email" class="form-control" placeholder="Email"

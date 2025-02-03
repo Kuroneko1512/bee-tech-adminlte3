@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminAuthController;
-use App\Http\Controllers\Admin\ProductCategoryController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Auth\UserAuthController;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Barryvdh\Debugbar\Facades\Debugbar;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\Admin\ProductCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,44 +25,77 @@ Route::get('/', function () {
     return view('index');
 });
 // Admin routes
-Route::prefix('admin')->group(function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+    // Route login
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admins.login');
     Route::post('login', [AdminAuthController::class, 'login'])->name('admins.login.post');
-    Route::post('logout', [AdminAuthController::class, 'logout'])->name('admins.logout');
 
-    // Route::middleware('admin')->group(function () {
+
+    //Route auth:guard admin
+    Route::middleware('admin')->group(function () {
+
         Route::get('index', function () {
             return view('admin.index');
         })->name('admins.index');
 
         // User
         Route::resource('users', UserController::class);
-        // Route::get('users', [UserController::class, 'index'])->name('admin.users');
-        // Route::get('users/create', [UserController::class, 'create'])->name('admin.users.create');
 
         // Product Category
         Route::resource('categories', ProductCategoryController::class);
-        // Route::get('categories', [ProductCategoryController::class, 'index'])->name('admin.categories');
-        // Route::get('categories/create', [ProductCategoryController::class, 'create'])->name('admin.categories.create');
 
         // Product
         Route::resource('products', ProductController::class);
         Route::get('products/download/{type}', [ProductController::class, 'download'])->name('products.download');
-        // Route::get('products', [ProductController::class, 'index'])->name('admin.products');
-        // Route::get('products/create', [ProductController::class, 'create'])->name('admin.products.create');
-        
-    // });
+
+        //Logout
+        Route::post('logout', [AdminAuthController::class, 'logout'])->name('admins.logout');
+    });
 });
 
 // User routes
-Route::prefix('user')->group(function () {
+Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('login', [UserAuthController::class, 'showLoginForm'])->name('users.login');
     Route::post('login', [UserAuthController::class, 'login'])->name('users.login.post');
-    Route::post('logout', [UserAuthController::class, 'logout'])->name('users.logout');
 
-    // Route::middleware('auth')->group(function () {
+    Route::middleware('auth')->group(function () {
+
         Route::get('dashboard', function () {
             return view('user.index');
         })->name('users.dashboard');
-    // });
+
+        // Product Category
+        Route::resource('categories', ProductCategoryController::class);
+
+        // Product
+        Route::resource('products', ProductController::class);
+        Route::get('products/download/{type}', [ProductController::class, 'download'])->name('products.download');
+
+        //Logout
+        Route::post('logout', [UserAuthController::class, 'logout'])->name('users.logout');
+    });
+});
+
+
+Route::get('/test-mail', function () {
+    try {
+        Debugbar::info('Testing mail connection...');
+
+        Mail::raw('Test email from ' . config('app.name'), function ($message) {
+            // $message->to('michaeltran041098@gmail.com')
+            $message->to('thomt1512@gmail.com')
+                ->subject('Test Mail Configuration');
+        });
+
+        Debugbar::success('Email sent successfully');
+        return 'Email sent successfully!';
+    } catch (\Exception $e) {
+        Debugbar::error('Mail Error: ' . $e->getMessage());
+        Debugbar::error($e->getTraceAsString());
+
+        return view('errors.mail-test', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
 });

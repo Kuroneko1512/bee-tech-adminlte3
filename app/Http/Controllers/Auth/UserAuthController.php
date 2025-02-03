@@ -21,7 +21,7 @@ class UserAuthController extends Controller
 
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('user.index');
+            return redirect()->route('user.users.dashboard');
         }
 
         return back()->withErrors([
@@ -34,6 +34,6 @@ class UserAuthController extends Controller
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('user.login');
+        return redirect()->route('user.users.login');
     }
 }

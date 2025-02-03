@@ -15,7 +15,7 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form action="{{ route('categories.update', $category->id) }}" method="POST"
+                    <form action="{{ route(getRouteName('categories.update'), $category->id) }}" method="POST"
                         enctype="multipart/form-data">
                         {{-- <form action="" method="POST" enctype="multipart/form-data"> --}}
                         @csrf

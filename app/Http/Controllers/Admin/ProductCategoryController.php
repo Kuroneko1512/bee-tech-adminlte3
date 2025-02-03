@@ -59,7 +59,7 @@ class ProductCategoryController extends Controller
             Debugbar::info('Query Log:');
             Debugbar::info(DB::getQueryLog());
 
-            return redirect()->route('categories.index')
+            return redirect()->route(getRouteName('categories.index'))
                 ->with('success', 'Thêm danh mục thành công');
         } catch (\Throwable $e) {
             Debugbar::error('Store Product Category Error:');
@@ -97,7 +97,7 @@ class ProductCategoryController extends Controller
             $data = $request->validated();
             Debugbar::info('Request Data:');
             Debugbar::info($data);
-    
+
             if (!empty($data)) {
                 Debugbar::info('Data before update:');
                 Debugbar::info($data);
@@ -105,11 +105,12 @@ class ProductCategoryController extends Controller
                 $category->update($data);
                 Debugbar::info('Query Log:');
                 Debugbar::info(DB::getQueryLog());
-                return back()->with('success', 'Cập nhật thành công');
+                // return back()
+                return redirect()->route(getRouteName('categories.index'))
+                    ->with('success', 'Cập nhật thành công');
             }
-    
+
             return back()->with('info', 'Không có thông tin nào được thay đổi');
-    
         } catch (\Throwable $e) {
             Debugbar::error('Update Product Category Error:');
             Debugbar::error($e->getMessage());
@@ -129,7 +130,7 @@ class ProductCategoryController extends Controller
             Debugbar::info($category->toArray());
             // $category->delete();
             $this->deleteService->deleteCategory($category);
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Xóa danh mục thành công'

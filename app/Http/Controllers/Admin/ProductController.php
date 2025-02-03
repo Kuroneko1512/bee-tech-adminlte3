@@ -107,7 +107,7 @@ class ProductController extends Controller
             Debugbar::info('Query Log:');
             Debugbar::info(DB::getQueryLog());
 
-            return redirect()->route('products.index')
+            return redirect()->route(getRouteName('products.index'))
                 ->with('success', 'Thêm sản phẩm thành công');
         } catch (\Throwable $e) {
             Debugbar::error('Create Product Error:');
@@ -173,7 +173,7 @@ class ProductController extends Controller
                 Debugbar::info('Query Log:');
                 Debugbar::info(DB::getQueryLog());
 
-                return redirect()->route('products.index')
+                return redirect()->route(getRouteName('products.index'))
                     ->with('success', 'Cập nhật thành công');
             }
 

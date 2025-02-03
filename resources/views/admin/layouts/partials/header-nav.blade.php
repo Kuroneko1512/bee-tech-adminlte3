@@ -125,7 +125,7 @@
         </div>
     </li>
     {{-- User Menu --}}
-    <li class="nav-item dropdown user-menu">
+    {{-- <li class="nav-item dropdown user-menu">
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
             <img src="{{ asset('libs/dist/img/user2-160x160.jpg') }}" class="user-image img-circle elevation-2"
                 alt="User Image">
@@ -163,7 +163,90 @@
                 <a href="#" class="btn btn-default btn-flat float-right">Sign out</a>
             </li>
         </ul>
+    </li> --}}
+
+    {{-- Test user --}}
+    {{-- Check current route để hiển thị đúng login link --}}
+    @php
+        $isAdminRoute = request()->is('admin*');
+    @endphp
+
+    <li class="nav-item dropdown user-menu">
+        {{-- Check user đã login chưa --}}
+        @if (auth()->guard('admin')->check() || auth()->guard('web')->check())
+            @php
+                // Lấy thông tin user từ guard tương ứng
+                if (auth()->guard('admin')->check()) {
+                    $user = auth()->guard('admin')->user();
+                    $logoutRoute = 'admin.admins.logout';
+                } else {
+                    $user = auth()->guard('web')->user();
+                    $logoutRoute = 'user.users.logout';
+                }
+            @endphp
+
+            {{-- Hiển thị thông tin user --}}
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                <img src="{{ asset('libs/dist/img/user2-160x160.jpg') }}" class="user-image img-circle elevation-2"
+                    alt="User Image">
+                <span class="d-none d-md-inline">{{ $user->first_name . ' ' . $user->last_name }}</span>
+            </a>
+
+            {{-- Dropdown menu --}}
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <!-- User image -->
+                <li class="user-header bg-primary">
+                    <img src="{{ asset('libs/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2"
+                        alt="User Image">
+                    <p>
+                        {{ $user->first_name . ' ' . $user->last_name }}
+                        <small>Member since {{ $user->created_at->format('M Y') }}</small>
+                    </p>
+                </li>
+                <!-- Menu Body -->
+                <li class="user-body">
+                    <div class="row">
+                        <div class="col-4 text-center">
+                            <a href="#">Followers</a>
+                        </div>
+                        <div class="col-4 text-center">
+                            <a href="#">Sales</a>
+                        </div>
+                        <div class="col-4 text-center">
+                            <a href="#">Friends</a>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                    {{-- Profile link với helper route --}}
+                    <a href="" class="btn btn-default btn-flat">Profile</a>
+
+                    {{-- Logout form với helper route --}}
+                    <form action="{{ route($logoutRoute) }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="btn btn-default btn-flat float-right">Sign out</button>
+                    </form>
+                </li>
+            </ul>
+        @else
+            {{-- Hiển thị login link theo route hiện tại --}}
+            @if ($isAdminRoute)
+                <a href="{{ route('admin.admins.login') }}" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+            @else
+                <a href="{{ route('user.users.login') }}" class="nav-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </a>
+            @endif
+        @endif
     </li>
+
+    {{-- end test --}}
     <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
