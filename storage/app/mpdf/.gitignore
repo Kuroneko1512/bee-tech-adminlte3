@@ -1,0 +1,5 @@
+*
+!.gitignore
+!mpdf/
+!mpdf/*
+!mpdf/ttfontdata/*

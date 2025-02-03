@@ -1,4 +1,5 @@
 *
-!mpdf/
-!public/
 !.gitignore
+!public/
+!mpdf/
+!mpdf/*
