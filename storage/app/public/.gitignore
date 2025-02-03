@@ -1,6 +1,8 @@
 *
 !default/
 !default/*
-!products
-!users
+!products/
+!products/.gitkeep
+!users/
+!users/.gitkeep
 !.gitignore
