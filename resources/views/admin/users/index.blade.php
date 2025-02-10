@@ -48,7 +48,7 @@
                             <div class="col-md-6">
                                 <div class="btn-group">
                                     <a href="{{ route(getRouteName('users.create')) }}" class="btn btn-primary">
-                                        <i class="fas fa-plus"></i> Add Product
+                                        <i class="fas fa-plus"></i> Add User
                                     </a>
                                     {{-- <a href="{{ route(getRouteName('products.download'), ['type' => 'excel']) }}"
                                         class="btn btn-success">

@@ -29,6 +29,10 @@ class UserMail extends Mailable
         $this->data = $data;
     }
 
+    public function getType(): string
+    {
+        return $this->type;
+    }
     /**
      * Get the message envelope.
      */

@@ -31,6 +31,10 @@ class User extends Authenticatable
         'reset_password',
         'status',
         'flag_delete',
+        'address',
+        'province_id',
+        'district_id',
+        'commune_id'
     ];
 
     /**
@@ -55,4 +59,22 @@ class User extends Authenticatable
         'birthday' => 'date',
         'flag_delete' => 'boolean',
     ];
+
+    //Quan hệ n-1 với bảng provinces : Một user thuộc một tỉnh/thành phố
+    public function province()
+    {
+        return $this->belongsTo(Province::class);
+    }
+
+    //Quan hệ n-1 với bảng districts : Một user thuộc một quận/huyện
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    //Quan hệ n-1 với bảng communes : Một user thuộc một xã/phường
+    public function commune()
+    {
+        return $this->belongsTo(Commune::class);
+    }
 }

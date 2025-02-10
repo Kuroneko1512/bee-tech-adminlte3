@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Auth\AdminAuthController;
@@ -50,6 +51,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
         //Logout
         Route::post('logout', [AdminAuthController::class, 'logout'])->name('admins.logout');
+
+        // Thêm routes cho location
+        Route::get('locations', [LocationController::class, 'index'])->name('locations.index');
+        Route::post('locations/import', [LocationController::class, 'import'])->name('locations.import');
+        Route::get('locations/import/progress', [LocationController::class, 'importProgress'])->name('locations.import.progress');
     });
 });
 

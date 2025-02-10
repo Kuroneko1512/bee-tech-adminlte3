@@ -37,7 +37,8 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
-            'queue' => 'default',
+            // 'queue' => 'default',
+            'queue' => 'emails',
             'retry_after' => 90,
             // 'after_commit' => false,
             'after_commit' => true,
@@ -72,8 +73,16 @@ return [
             'after_commit' => false,
         ],
 
-    ],
+        // queue riêng cho import địa chỉ
+        'location_import' => [
+            'driver' => 'database',
+            'table' => 'jobs',
+            'queue' => 'location_import',
+            'retry_after' => 90,
+            'after_commit' => true,
+        ],
 
+    ],
     /*
     |--------------------------------------------------------------------------
     | Job Batching

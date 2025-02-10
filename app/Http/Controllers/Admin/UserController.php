@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Mail\UserMail;
+use App\Models\Province;
 use App\Jobs\ProcessEmail;
 use Illuminate\Http\Request;
 use App\Traits\UploadFileTrait;
@@ -81,7 +82,7 @@ class UserController extends Controller
             ProcessEmail::dispatch(
                 new UserMail($user, 'created'),
                 $user->email
-            );
+            )->delay(now()->addSeconds(30))->onQueue('emails');
 
             return redirect()->route(getRouteName('users.index'))
                 ->with('success', 'Thêm người dùng thành công');
@@ -110,7 +111,7 @@ class UserController extends Controller
     {
         Debugbar::info('Edit User Data:');
         Debugbar::info($user->toArray());
-        return view('admin.users.edit', compact('user'));
+        return view('admin.users.edit', compact('user', ));
     }
 
     /**
@@ -149,6 +150,7 @@ class UserController extends Controller
 
             Debugbar::info('Changed Data:');
             Debugbar::info($data);
+
             if (!empty($data)) {
                 DB::enableQueryLog();
 
@@ -160,8 +162,15 @@ class UserController extends Controller
                 ProcessEmail::dispatch(
                     new UserMail($user, 'updated'),
                     $user->email
-                );
+                )->delay(now()->addSeconds(30))->onQueue('emails');
 
+                // return dd([
+                //     'request_all' => $request->all(),
+                //     'data' => $data, 
+                //     'files' => $request->allFiles(),
+                //     'old_user' => $user->toArray()
+                // ]);
+                // return back();
                 return redirect()->route(getRouteName('users.index'))
                     ->with('success', 'Cập nhật thành công');
             }
