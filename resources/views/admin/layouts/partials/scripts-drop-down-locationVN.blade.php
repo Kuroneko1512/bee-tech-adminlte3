@@ -6,7 +6,7 @@
         let selectedCommune = '{{ $selectedCommune ?? '' }}';
 
         // Load danh sách tỉnh/thành
-        $.get('/api/locations/provinces', function(res) {
+        $.get('/api/v1/locations/provinces', function(res) {
             if (res.success) {
                 res.data.forEach(function(province) {
                     let selected = province.id == selectedProvince ? 'selected' : '';
@@ -25,7 +25,7 @@
             $('#commune').empty().append('<option value="">Chọn xã/phường</option>');
 
             if (provinceId) {
-                $.get(`/api/locations/districts/${provinceId}`, function(res) {
+                $.get(`/api/v1/locations/districts/${provinceId}`, function(res) {
                     if (res.success) {
                         res.data.forEach(function(district) {
                             let selected = district.id == selectedDistrict ?
@@ -46,7 +46,7 @@
             $('#commune').empty().append('<option value="">Chọn xã/phường</option>');
 
             if (districtId) {
-                $.get(`/api/locations/communes/${districtId}`, function(res) {
+                $.get(`/api/v1/locations/communes/${districtId}`, function(res) {
                     if (res.success) {
                         res.data.forEach(function(commune) {
                             let selected = commune.id == selectedCommune ? 'selected' :
