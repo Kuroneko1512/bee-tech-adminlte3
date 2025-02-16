@@ -83,7 +83,7 @@ return [
     | to any of the locales which will be supported by the application.
     |
     */
-
+    // Chọn ngôn ngữ mặc định
     'locale' => 'en',
 
     /*
@@ -97,6 +97,7 @@ return [
     |
     */
 
+    // Ngôn ngữ dự phòng nếu không tìm thấy bản dịch
     'fallback_locale' => 'en',
 
     /*
@@ -170,7 +171,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // Service passport
         Laravel\Passport\PassportServiceProvider::class,
+        // Service View composer hiện dùng cho đa ngôn ngữ
+        App\Providers\ViewServiceProvider::class,
     ])->toArray(),
 
     /*
