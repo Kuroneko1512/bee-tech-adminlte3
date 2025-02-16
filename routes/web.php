@@ -3,10 +3,11 @@
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\UserAuthController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 
@@ -22,6 +23,7 @@ use App\Http\Controllers\Admin\ProductCategoryController;
 */
 
 
+Route::get('language/{lang}', [LanguageController::class, 'changeLanguage'])->name('language.change');
 Route::get('/', function () {
     return view('index');
 });

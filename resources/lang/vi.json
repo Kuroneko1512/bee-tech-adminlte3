@@ -1,0 +1,49 @@
+{
+    "User Management": "Quản lý người dùng",
+    "List Users": "Danh sách người dùng",
+    "Create User": "Tạo người dùng",
+    "Edit User": "Chỉnh sửa người dùng",
+    "Basic Information": "Thông tin cơ bản",
+    "Personal Information": "Thông tin cá nhân",
+    "Location Information": "Thông tin địa chỉ",
+    "Profile Picture": "Ảnh đại diện",
+    "Add User": "Tạo người dùng",
+    "Search": "Tìm kiếm",
+
+    "ID": "ID",
+    "User Name": "Tên đăng nhập",
+    "Email": "Email",
+    "Birthday": "Ngày sinh",
+    "Name": "Họ tên",
+    "Status": "Trạng thái",
+    "Create Date": "Ngày tạo",
+    "Update Date": "Ngày cập nhật",
+    "Action": "Thao tác",
+
+    "First Name": "Họ",
+    "Last Name": "Tên",
+    "Password": "Mật khẩu",
+    "Address": "Địa chỉ",
+    "Province": "Tỉnh/Thành phố",
+    "District": "Quận/Huyện",
+    "Commune": "Xã/Phường",
+
+    "Active": "Hoạt động",
+    "Inactive": "Không hoạt động",
+
+    "Create": "Tạo mới",
+    "Update": "Cập nhật",
+    "Cancel": "Hủy",
+    "Delete": "Xóa",
+
+    "Success": "Thành công",
+    "Error": "Lỗi",
+    "Warning": "Cảnh báo",
+
+    "User created successfully": "Tạo người dùng thành công",
+    "User updated successfully": "Cập nhật người dùng thành công",
+    "User deleted successfully": "Xóa người dùng thành công",
+    "Failed to create user": "Tạo người dùng thất bại",
+    "Failed to update user": "Cập nhật người dùng thất bại",
+    "Failed to delete user": "Xóa người dùng thất bại"
+}

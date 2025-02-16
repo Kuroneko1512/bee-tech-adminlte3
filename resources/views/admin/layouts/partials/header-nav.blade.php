@@ -4,7 +4,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
-        <a href="index3.html" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Home</a>
     </li>
     <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Contact</a>
@@ -247,6 +247,22 @@
     </li>
 
     {{-- end test --}}
+    <!-- Language Dropdown Menu -->
+    <li class="nav-item dropdown">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+            <i class="flag-icon flag-icon-{{ $languages[App::getLocale()]['flag'] ?? 'us' }}"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right p-0">
+            @foreach ($languages as $code => $lang)
+                <a href="{{ route('language.change', $code) }}"
+                    class="dropdown-item {{ App::getLocale() == $code ? 'active' : '' }}">
+                    <i class="flag-icon flag-icon-{{ $lang['flag'] }} mr-2"></i>
+                    {{ $lang['name'] }}
+                </a>
+            @endforeach
+        </div>
+    </li>
+
     <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>

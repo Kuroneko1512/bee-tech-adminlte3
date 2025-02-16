@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('title')
-    List Users
+    {{ __('List Users') }}
 @endsection
 
 @section('contents')
@@ -11,7 +11,7 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">List Users</h3>
+                        <h3 class="card-title">{{ __('List Users') }}</h3>
                     </div>
 
                     <!-- Thêm thông báo ở trên danh sách người dùng -->
@@ -48,7 +48,7 @@
                             <div class="col-md-6">
                                 <div class="btn-group">
                                     <a href="{{ route(getRouteName('users.create')) }}" class="btn btn-primary">
-                                        <i class="fas fa-plus"></i> Add User
+                                        <i class="fas fa-plus"></i> {{ __('Add User') }}
                                     </a>
                                     {{-- <a href="{{ route(getRouteName('products.download'), ['type' => 'excel']) }}"
                                         class="btn btn-success">
@@ -77,7 +77,7 @@
                                             value="{{ request('keyword') }}">
                                         <div class="input-group-append">
                                             <button class="btn btn-primary" type="submit">
-                                                <i class="fas fa-search"></i> Tìm kiếm
+                                                <i class="fas fa-search"></i> {{ __('Search') }}
                                             </button>
                                         </div>
                                     </div>
@@ -89,16 +89,16 @@
                             <table id="example1" class="table table-bordered table-striped table-responsive table-hover">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>User Name</th>
-                                        <th>Email</th>
-                                        <th>Birthday</th>
-                                        <th>Name</th>
+                                        <th>{{ __('ID') }}</th>
+                                        <th>{{ __('User Name') }}</th>
+                                        <th>{{ __('Email') }}</th>
+                                        <th>{{ __('Birthday') }}</th>
+                                        <th>{{ __('Name') }}</th>
                                         {{-- <th>Last Name</th> --}}
-                                        <th>Status</th>
-                                        <th>Create Date</th>
-                                        <th>Update Date</th>
-                                        <th>Action</th>
+                                        <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Create Date') }}</th>
+                                        <th>{{ __('Update Date') }}</th>
+                                        <th>{{ __('Action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -129,9 +129,9 @@
                                             {{-- <td>Last Name</td> --}}
                                             <td>
                                                 @if ($user->status == 'active')
-                                                    <span class="badge badge-pill badge-success">Active</span>
+                                                    <span class="badge badge-pill badge-success">{{ __('Active') }}</span>
                                                 @else
-                                                    <span class="badge badge-pill badge-danger">Inactive</span>
+                                                    <span class="badge badge-pill badge-danger">{{ __('Inactive') }}</span>
                                                 @endif
                                             </td>
                                             <td>{{ $user->created_at->format('d/m/Y H:i:s') }}</td>
@@ -149,16 +149,16 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>User Name</th>
-                                        <th>Email</th>
-                                        <th>Birthday</th>
-                                        <th>Name</th>
+                                        <th>{{ __('ID') }}</th>
+                                        <th>{{ __('User Name') }}</th>
+                                        <th>{{ __('Email') }}</th>
+                                        <th>{{ __('Birthday') }}</th>
+                                        <th>{{ __('Name') }}</th>
                                         {{-- <th>Last Name</th> --}}
-                                        <th>Status</th>
-                                        <th>Create Date</th>
-                                        <th>Update Date</th>
-                                        <th>Action</th>
+                                        <th>{{ __('Status') }}</th>
+                                        <th>{{ __('Create Date') }}</th>
+                                        <th>{{ __('Update Date') }}</th>
+                                        <th>{{ __('Action') }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
