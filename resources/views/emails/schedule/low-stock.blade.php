@@ -20,7 +20,7 @@
         @foreach($products as $product)
         <tr>
             <td>{{ $product->name }}</td>
-            <td>{{ $product->quantity }}</td>
+            <td>{{ $product->stock }}</td>
         </tr>
         @endforeach
     </table>

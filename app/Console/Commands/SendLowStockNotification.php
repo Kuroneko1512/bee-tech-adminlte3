@@ -30,8 +30,8 @@ class SendLowStockNotification extends Command
     public function handle()
     {
         // Lấy sản phẩm có số lượng < 10
-        $lowStockProducts = Product::where('quantity', '<', 10)
-            ->get(['id', 'name', 'quantity']);
+        $lowStockProducts = Product::where('stock', '<', 10)
+            ->get(['id', 'name', 'stock']);
 
         if ($lowStockProducts->isEmpty()) {
             $this->info('Không có sản phẩm nào sắp hết hàng');
@@ -44,9 +44,11 @@ class SendLowStockNotification extends Command
 
         $sentCount = 0;
         foreach ($users as $user) {
-            Mail::to($user->email)
-                ->queue(new LowStockNotification($lowStockProducts));
+            // Gửi mail qua queue đã định nghĩa trong Mailable
+            Mail::to($user->email)->send(new LowStockNotification($lowStockProducts));
             $sentCount++;
         }
+
+        $this->info("Đã gửi thông báo đến {$sentCount} người dùng");
     }
 }

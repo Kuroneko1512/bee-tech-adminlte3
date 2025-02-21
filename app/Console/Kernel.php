@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         // Chạy hàng ngày lúc 8:00 sáng
         $schedule->command('app:send-low-stock-notification')
-            ->dailyAt('08:00')
+            ->dailyAt('17:16')
             ->description('Gửi email thông báo sản phẩm có số lượng dưới 10')
             ->withoutOverlapping();
 

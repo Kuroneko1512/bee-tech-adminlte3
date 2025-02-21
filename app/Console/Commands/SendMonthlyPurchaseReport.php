@@ -35,28 +35,36 @@ class SendMonthlyPurchaseReport extends Command
         $startDate = $lastMonth->startOfMonth();
         $endDate = $lastMonth->endOfMonth();
 
+        // Lấy thống kê mua hàng của customers
+        $customerStats = Order::join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->whereBetween('orders.created_at', [$startDate, $endDate])
+            ->selectRaw('
+                            orders.customer_id,
+                            customers.full_name,
+                            customers.phone,
+                            customers.email,
+                            COUNT(DISTINCT orders.id) as total_orders,
+                            SUM(orders.total) as total_amount,
+                            COUNT(DISTINCT order_details.product_id) as unique_products,
+                            SUM(order_details.quantity) as total_items
+                        ')
+            ->join('customers', 'orders.customer_id', '=', 'customers.id')
+            ->where('customers.status', 'active')
+            ->where('customers.flag_delete', 0)
+            ->groupBy('orders.customer_id', 'customers.full_name', 'customers.phone', 'customers.email')
+            ->get();
+
         // Lấy users đang hoạt động
         $users = User::where('status', 'active')->get();
-
         $sentCount = 0;
-        foreach ($users as $user) {
-            // Tính tổng đơn hàng và số tiền của mỗi user
-            $report = Order::where('user_id', $user->id)
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->selectRaw('
-                                COUNT(*) as total_orders,
-                                SUM(total_amount) as total_amount,
-                                COUNT(DISTINCT product_id) as unique_products
-                            ')
-                ->first();
 
-            if ($report->total_orders > 0) {
-                Mail::to($user->email)
-                    ->queue(new MonthlyPurchaseReport($report));
-                $sentCount++;
-            }
+        foreach ($users as $user) {
+
+            // Gửi mail qua queue đã định nghĩa trong Mailable
+            Mail::to($user->email)->send(new MonthlyPurchaseReport($customerStats));
+            $sentCount++;
         }
 
-        $this->info("Đã gửi báo cáo cho {$sentCount} người dùng");
+        $this->info("Đã gửi báo cáo cho {$sentCount} User");
     }
 }

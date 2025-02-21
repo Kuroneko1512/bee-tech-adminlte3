@@ -98,7 +98,7 @@ class ProductController extends Controller
 
             // $data['avatar'] = $this->handleUploadFile($request, 'avatar', 'products');
             $data['avatar'] = $this->uploadService->UploadImage(
-                $request->file('avatar'), 
+                $request->file('avatar'),
                 'products'
             );
 
@@ -207,7 +207,7 @@ class ProductController extends Controller
             Debugbar::info('Product Deleted Successfully');
 
             Debugbar::info('Delete Product Avatar:');
-                Debugbar::info($product->avatar);
+            Debugbar::info($product->avatar);
             return response()->json([
                 'success' => true,
                 'message' => 'Xóa sản phẩm thành công'
@@ -255,5 +255,7 @@ class ProductController extends Controller
             default:
                 abort(404);
         }
+
+        return Storage::download($filePath);
     }
 }

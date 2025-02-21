@@ -69,13 +69,16 @@
                                     <a href="{{ route(getRouteName('products.create')) }}" class="btn btn-primary">
                                         <i class="fas fa-plus"></i> Add Product
                                     </a>
-                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'excel']) }}" class="btn btn-success">
+                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'excel']) }}"
+                                        class="btn btn-success">
                                         <i class="fas fa-file-excel"></i> Excel
                                     </a>
-                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'csv']) }}" class="btn btn-info">
+                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'csv']) }}"
+                                        class="btn btn-info">
                                         <i class="fas fa-file-csv"></i> CSV
                                     </a>
-                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'pdf']) }}" class="btn btn-danger">
+                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'pdf']) }}"
+                                        class="btn btn-danger">
                                         <i class="fas fa-file-pdf"></i> PDF
                                     </a>
                                     <button type="button" class="btn btn-secondary" onclick="window.print()">
@@ -190,7 +193,7 @@
 @push('scripts')
     @include('admin.layouts.partials.scripts-delete-ajax')
     <script>
-        window.deleteUrl  = "{{ route(getRouteName('products.index')) }}/";
+        window.deleteUrl = "{{ route(getRouteName('products.index')) }}/";
 
         $(function() {
             $('.delete-product').on('click', function(e) {

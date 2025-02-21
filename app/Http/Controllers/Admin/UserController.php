@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Mail\UserMail;
-use App\Models\Province;
-use App\Jobs\ProcessEmail;
 use Illuminate\Http\Request;
 use App\Traits\UploadFileTrait;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Jobs\ProcessCreateUpdateEmail;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\User\StoreUserRequest;
@@ -79,10 +78,10 @@ class UserController extends Controller
             Debugbar::info(DB::getQueryLog());
 
             // Dispatch email job
-            ProcessEmail::dispatch(
+            ProcessCreateUpdateEmail::dispatch(
                 new UserMail($user, 'created'),
                 $user->email
-            )->delay(now()->addSeconds(30))->onQueue('emails');
+            )->delay(now()->addSeconds(30))->onQueue('user-notifications');
 
             return redirect()->route(getRouteName('users.index'))
                 ->with('success', 'Thêm người dùng thành công');
@@ -158,17 +157,19 @@ class UserController extends Controller
 
                 Debugbar::info('Query executed:');
                 Debugbar::info(DB::getQueryLog());
+                // dd($user->province->name); 
 
-                ProcessEmail::dispatch(
+                ProcessCreateUpdateEmail::dispatch(
                     new UserMail($user, 'updated'),
                     $user->email
-                )->delay(now()->addSeconds(30))->onQueue('emails');
+                )->delay(now()->addSeconds(10))->onQueue('user-notifications');
 
                 // return dd([
                 //     'request_all' => $request->all(),
                 //     'data' => $data, 
                 //     'files' => $request->allFiles(),
-                //     'old_user' => $user->toArray()
+                //     'old_user' => $user->toArray(),
+                //     'province'   => gettype($user->province->name),
                 // ]);
                 // return back();
                 return redirect()->route(getRouteName('users.index'))

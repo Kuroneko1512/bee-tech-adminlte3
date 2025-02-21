@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class MonthlyPurchaseReport extends Mailable
+class MonthlyPurchaseReport extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -20,6 +20,8 @@ class MonthlyPurchaseReport extends Mailable
     public function __construct($reportData)
     {
         $this->reportData = $reportData;
+        // Chỉ định queue name trong constructor
+        $this->onQueue('monthly-reports');
     }
 
     /**

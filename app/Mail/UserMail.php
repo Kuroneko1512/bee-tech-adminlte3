@@ -55,13 +55,14 @@ class UserMail extends Mailable
      */
     public function content(): Content
     {
+        $provinceName = str_replace(['"', '[', ']'], '', $this->user->province->name);
         //Cấu hình nội dung email (view, data)
         return new Content(
             // view: 'view.name',
             view: "emails.users.{$this->type}",
             with: [
                 'user' => $this->user,
-                'data' => $this->data
+                'data' => $this->data,
             ],
         );
     }

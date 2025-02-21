@@ -37,8 +37,8 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
-            // 'queue' => 'default',
-            'queue' => 'emails',
+            'queue' => 'default',
+            // 'queue' => 'emails',
             'retry_after' => 90,
             // 'after_commit' => false,
             'after_commit' => true,
@@ -82,6 +82,14 @@ return [
             'after_commit' => true,
         ],
 
+    ],
+
+    'queues' => [
+        'default', // Queue mặc định cho các jobs không chỉ định queue
+        'user-notifications', // Queue cho thông báo user
+        'stock-alerts', // Queue cho thông báo hàng tồn
+        'monthly-reports', // Queue cho báo cáo tháng
+        'export-products', // Queue cho export sản phẩm
     ],
     /*
     |--------------------------------------------------------------------------

@@ -9,19 +9,20 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class LowStockNotification extends Mailable implements ShouldQueue
+class ResetPasswordMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $products;
+    protected $token;
+    protected $user;
+
     /**
      * Create a new message instance.
      */
-    public function __construct($products)
+    public function __construct($token, $user)
     {
-        $this->products = $products;
-        // Chỉ định queue name trong constructor
-        $this->onQueue('stock-alerts');
+        $this->token = $token;
+        $this->user = $user;
     }
 
     /**
@@ -30,8 +31,8 @@ class LowStockNotification extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            // subject: 'Low Stock Notification',
-            subject: 'Thông báo: Sản phẩm sắp hết hàng',
+            // subject: 'Reset Password Mail',
+            subject: 'Đặt lại mật khẩu',
         );
     }
 
@@ -40,8 +41,16 @@ class LowStockNotification extends Mailable implements ShouldQueue
      */
     public function content(): Content
     {
+        $resetUrl = route('user.password.reset', ['token' => $this->token]);
+
         return new Content(
-            view: 'emails.schedule.low-stock',
+            // view: 'view.name',
+            view: 'emails.users.send-reset-password',
+            with: [
+                'resetUrl' => $resetUrl,
+                'validHours' => 3,
+                'user'=> $this->user,
+            ],
         );
     }
 

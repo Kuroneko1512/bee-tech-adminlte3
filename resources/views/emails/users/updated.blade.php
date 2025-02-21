@@ -6,7 +6,7 @@
 </div>
 
 <div class="email-content">
-    <h3>Xin chào {{ $user->first_name }} {{ $user->last_name }},</h3>
+    <h3>Xin chào  {{ $user->last_name }} {{ $user->first_name }},</h3>
     
     <p>Tài khoản của bạn vừa được cập nhật thông tin.</p>
     
@@ -20,6 +20,12 @@
             <tr>
                 <td><strong>Email:</strong></td>
                 <td>{{ $user->email }}</td>
+            </tr>
+            <tr>
+                <td><strong>province:</strong></td>
+                <td>{{ $user->province->name}} {{ $user->district->name}} {{ $user->commune->name}}</td>
+                {{-- <td>{{ $provinceName }}</td> --}}
+
             </tr>
         </table>
     </div>

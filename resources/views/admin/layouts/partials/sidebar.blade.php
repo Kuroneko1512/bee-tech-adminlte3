@@ -62,11 +62,134 @@
             </ul>
         </li>
         {{-- User --}}
+        @if (Auth::guard('admin')->check())
+            <li class="nav-item">
+                <a href=" #" class="nav-link">
+                    <i class="nav-icon fas fa-users"></i>
+                    <p>
+                        User
+                        <i class="fas fa-angle-left right"></i>
+                        {{-- <span class="badge badge-info right">6</span> --}}
+                        {{-- <span class="right badge badge-danger">New</span> --}}
+                    </p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="{{ route(getRouteName('users.index')) }}" class="nav-link ">
+                            <i class="fas fa-portrait nav-icon"></i>
+                            <p>List</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route(getRouteName('users.create')) }}" class="nav-link ">
+                            <i class="fas fa-user-plus nav-icon"></i>
+                            <p>Create</p>
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-user-edit nav-icon"></i>
+                        <p>Edit</p>
+                    </a>
+                </li> --}}
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-users-slash nav-icon"></i>
+                            <p>Banned</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        @endif
+        {{-- End User --}}
+
+        {{-- Product --}}
+        <li class="nav-header"></li>
         <li class="nav-item">
             <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-users"></i>
+                <i class="nav-icon fas fa-boxes"></i>
                 <p>
-                    User
+                    Products
+                    <i class="fas fa-angle-left right"></i>
+                    {{-- <span class="badge badge-info right">6</span> --}}
+                    {{-- <span class="right badge badge-danger">New</span> --}}
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route(getRouteName('products.index')) }}" class="nav-link ">
+                        <i class="fas fa-user-plus nav-icon"></i>
+                        <p>List</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route(getRouteName('products.create')) }}" class="nav-link ">
+                        <i class="fas fa-user-plus nav-icon"></i>
+                        <p>Create</p>
+                    </a>
+                </li>
+                {{--                 
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-user-edit nav-icon"></i>
+                        <p>Edit</p>
+                    </a>
+                </li> --}}
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users-slash nav-icon"></i>
+                        <p>Banned</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        {{-- End Product --}}
+        {{-- Category --}}
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-th-large"></i>
+                <p>
+                    Categories
+                    <i class="fas fa-angle-left right"></i>
+                    {{-- <span class="badge badge-info right">6</span> --}}
+                    {{-- <span class="right badge badge-danger">New</span> --}}
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route(getRouteName('categories.index')) }}" class="nav-link ">
+                        <i class="fas fa-user-plus nav-icon"></i>
+                        <p>List</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route(getRouteName('categories.create')) }}" class="nav-link ">
+                        <i class="fas fa-user-plus nav-icon"></i>
+                        <p>Create</p>
+                    </a>
+                </li>
+                {{--       
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-user-edit nav-icon"></i>
+                        <p>Edit</p>
+                    </a>
+                </li> --}}
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-users-slash nav-icon"></i>
+                        <p>Banned</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        {{-- End Category --}}
+        {{-- Order --}}
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-shopping-basket"></i>
+                <p>
+                    Orders
                     <i class="fas fa-angle-left right"></i>
                     {{-- <span class="badge badge-info right">6</span> --}}
                     {{-- <span class="right badge badge-danger">New</span> --}}
@@ -76,15 +199,22 @@
                 <li class="nav-item">
                     <a href="#" class="nav-link ">
                         <i class="fas fa-user-plus nav-icon"></i>
+                        <p>List</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link ">
+                        <i class="fas fa-user-plus nav-icon"></i>
                         <p>Create</p>
                     </a>
                 </li>
+                {{--       
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fas fa-user-edit nav-icon"></i>
                         <p>Edit</p>
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="fas fa-users-slash nav-icon"></i>
@@ -93,244 +223,7 @@
                 </li>
             </ul>
         </li>
-        {{-- End User --}}
-        {{-- Product --}}
-        <li class="nav-header">Products</li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-copy"></i>
-                <p>
-                    Layout Options
-                    <i class="fas fa-angle-left right"></i>
-                    <span class="badge badge-info right">6</span>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="pages/layout/top-nav.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Top Navigation</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/layout/top-nav-sidebar.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Top Navigation + Sidebar</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/layout/boxed.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Boxed</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/layout/fixed-sidebar.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Fixed Sidebar</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/layout/fixed-sidebar-custom.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Fixed Sidebar <small>+ Custom Area</small></p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/layout/fixed-topnav.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Fixed Navbar</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/layout/fixed-footer.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Fixed Footer</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Collapsed Sidebar</p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        {{-- End Product --}}
-        <li class="nav-item">
-            <a href="pages/calendar.html" class="nav-link">
-                <i class="nav-icon far fa-calendar-alt"></i>
-                <p>
-                    Calendar
-                    <span class="badge badge-info right">2</span>
-                </p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="pages/gallery.html" class="nav-link">
-                <i class="nav-icon far fa-image"></i>
-                <p>
-                    Gallery
-                </p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="pages/kanban.html" class="nav-link">
-                <i class="nav-icon fas fa-columns"></i>
-                <p>
-                    Kanban Board
-                </p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon far fa-envelope"></i>
-                <p>
-                    Mailbox
-                    {{-- <i class="fas fa-angle-left right"></i> --}}
-                </p>
-            </a>
-
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-book"></i>
-                <p>
-                    Pages
-                    {{-- <i class="fas fa-angle-left right"></i> --}}
-                </p>
-            </a>
-
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon far fa-plus-square"></i>
-                <p>
-                    Extras
-                    {{-- <i class="fas fa-angle-left right"></i> --}}
-                </p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-search"></i>
-                <p>
-                    Search
-                    {{-- <i class="fas fa-angle-left right"></i> --}}
-                </p>
-            </a>
-            {{-- <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="pages/search/simple.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Simple Search</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="pages/search/enhanced.html" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Enhanced</p>
-                    </a>
-                </li>
-            </ul> --}}
-        </li>
-        <li class="nav-header">MISCELLANEOUS</li>
-        <li class="nav-item">
-            <a href="iframe.html" class="nav-link">
-                <i class="nav-icon fas fa-ellipsis-h"></i>
-                <p>Tabbed IFrame Plugin</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="https://adminlte.io/docs/3.1/" class="nav-link">
-                <i class="nav-icon fas fa-file"></i>
-                <p>Documentation</p>
-            </a>
-        </li>
-        <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="fas fa-circle nav-icon"></i>
-                <p>Level 1</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-circle"></i>
-                <p>
-                    Level 1
-                    <i class="right fas fa-angle-left"></i>
-                </p>
-            </a>
-            <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Level 2</p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>
-                            Level 2
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>Level 3</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>Level 3</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>Level 3</p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Level 2</p>
-                    </a>
-                </li>
-            </ul>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="fas fa-circle nav-icon"></i>
-                <p>Level 1</p>
-            </a>
-        </li>
-        <li class="nav-header">LABELS</li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon far fa-circle text-danger"></i>
-                <p class="text">Important</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon far fa-circle text-warning"></i>
-                <p>Warning</p>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="nav-icon far fa-circle text-info"></i>
-                <p>Informational</p>
-            </a>
-        </li>
+        {{-- End Order --}}
     </ul>
 </nav>
 <!-- /.sidebar-menu -->

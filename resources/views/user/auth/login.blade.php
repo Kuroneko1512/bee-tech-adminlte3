@@ -27,11 +27,11 @@
                                 <span class="fas fa-envelope"></span>
                             </div>
                         </div>
-                        @error('email')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
                     </div>
-
+                    @error('email')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                    
                     <div class="input-group mb-3">
                         <input type="password" name="password" class="form-control" placeholder="Password" required>
                         <div class="input-group-append">
@@ -39,11 +39,10 @@
                                 <span class="fas fa-lock"></span>
                             </div>
                         </div>
-                        @error('password')
-                            <span class="text-danger">{{ $message }}</span>
-                        @enderror
                     </div>
-
+                    @error('password')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
                     <div class="row">
                         <div class="col-8">
                             <div class="icheck-primary">
@@ -70,7 +69,7 @@
                 <!-- /.social-auth-links -->
 
                 <p class="mb-1">
-                    <a href="#forgot-password">I forgot my password</a>
+                    <a href="{{ route('user.password.request') }}">Quên mật khẩu?</a>
                 </p>
                 <p class="mb-0">
                     <a href="#register" class="text-center">Register a new membership</a>
@@ -78,7 +77,7 @@
             </div>
         </div>
     </div>
-    </div>
+
     @include('admin.layouts.partials.scripts')
 </body>
 
