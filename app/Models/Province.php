@@ -31,6 +31,13 @@ class Province extends Model
      */
     public function communes()
     {
-        return $this->hasManyThrough(Commune::class, District::class);
+        return $this->hasManyThrough(
+            Commune::class,      // Model đích cần lấy dữ liệu
+            District::class,     // Model trung gian để join
+            'province_id',       // Khoá ngoại trên bảng trung gian (districts) 
+            'district_id',       // Khoá ngoại trên bảng đích (communes)
+            'id',               // Khoá chính của bảng gốc (provinces)
+            'id'                // Khoá chính của bảng trung gian (districts);
+        );
     }
 }

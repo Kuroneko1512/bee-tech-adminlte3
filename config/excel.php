@@ -203,7 +203,8 @@ return [
         | Available options: Excel::MPDF | Excel::TCPDF | Excel::DOMPDF
         |
         */
-        'pdf'      => Excel::DOMPDF,
+        // 'pdf'      => Excel::DOMPDF, // defaullt is DOMPDF
+        'pdf' => Excel::MPDF,
     ],
 
     /*

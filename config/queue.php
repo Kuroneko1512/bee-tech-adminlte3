@@ -90,6 +90,7 @@ return [
         'stock-alerts', // Queue cho thông báo hàng tồn
         'monthly-reports', // Queue cho báo cáo tháng
         'export-products', // Queue cho export sản phẩm
+        'export-locations', // Queue cho export địa chỉ VN
     ],
     /*
     |--------------------------------------------------------------------------

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+
 use Mpdf\Mpdf;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -11,12 +12,14 @@ use App\Services\DeleteService;
 use App\Services\UploadService;
 use App\Traits\UploadFileTrait;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
+
 
 class ProductController extends Controller
 {
@@ -41,10 +44,13 @@ class ProductController extends Controller
         $stockRange = $request->stock_range;
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhereHas('category', function ($q) use ($search) {
-                        $q->where('name', 'like', "%{$search}%");
+            // Escape ký tự % và _ để chúng được coi là ký tự thường
+            $escapedSearch = addcslashes($search, '%_'); // Áp dụng với MySQL
+
+            $query->where(function ($q) use ($escapedSearch) {
+                $q->where('name', 'like', "%{$escapedSearch}%")
+                    ->orWhereHas('category', function ($q) use ($escapedSearch) {
+                        $q->where('name', 'like', "%{$escapedSearch}%");
                     });
             });
         }

@@ -32,12 +32,19 @@ class LocationController extends Controller
         return view('admin.locations.index', compact('provinces'));
     }
 
+    public function list()
+    {
+        $perPage = request('per_page', 1);
+        $provinces = Province::with(['districts', 'communes'])->paginate($perPage);
+        return view('admin.locations.list-export', compact('provinces'));
+    }
+
     /**
      * Import dữ liệu từ file CSV
      * @param LocationImportRequest $request Yêu cầu chứa files import
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function import(LocationImportRequest $request) 
+    public function import(LocationImportRequest $request)
     {
         try {
             $this->importService->import($request->allFiles());
@@ -54,7 +61,7 @@ class LocationController extends Controller
     {
         // Lấy tổng số jobs từ cache
         $totalJobs = Cache::get('total_location_jobs', 0);
-        
+
         // Đếm jobs đang chờ
         $pendingJobs = DB::table('jobs')
             ->where('queue', 'location_import')
@@ -64,7 +71,7 @@ class LocationController extends Controller
         $failedJobs = DB::table('failed_jobs')
             ->where('queue', 'location_import')
             ->count();
-        
+
         // Lấy số jobs đã xử lý
         $processedJobs = Cache::get('processed_location_jobs', 0);
 
@@ -73,7 +80,7 @@ class LocationController extends Controller
             'pending' => $pendingJobs,
             'failed' => $failedJobs,
             'processed' => $processedJobs,
-            'percent' => $totalJobs > 0 ? 
+            'percent' => $totalJobs > 0 ?
                 round(($processedJobs / $totalJobs) * 100) : 0,
             'error' => Cache::get('import_error')
         ]);

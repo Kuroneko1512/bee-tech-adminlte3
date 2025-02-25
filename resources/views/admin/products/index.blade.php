@@ -64,12 +64,13 @@
                     <!-- /.card-header -->
                     <div class="card-body">
                         <div class="row mb-3">
+                            {{-- Add product and download button --}}
                             <div class="col-md-6">
                                 <div class="btn-group">
                                     <a href="{{ route(getRouteName('products.create')) }}" class="btn btn-primary">
                                         <i class="fas fa-plus"></i> Add Product
                                     </a>
-                                    <a href="{{ route(getRouteName('products.download'), ['type' => 'excel']) }}"
+                                    {{-- <a href="{{ route(getRouteName('products.download'), ['type' => 'excel']) }}"
                                         class="btn btn-success">
                                         <i class="fas fa-file-excel"></i> Excel
                                     </a>
@@ -80,12 +81,23 @@
                                     <a href="{{ route(getRouteName('products.download'), ['type' => 'pdf']) }}"
                                         class="btn btn-danger">
                                         <i class="fas fa-file-pdf"></i> PDF
+                                    </a> --}}
+                                    {{-- export download --}}
+                                    <a href="#" class="btn btn-success btn-download" data-type="excel">
+                                        <i class="fas fa-file-excel"></i> Excel
+                                    </a>
+                                    <a href="#" class="btn btn-info btn-download" data-type="csv">
+                                        <i class="fas fa-file-csv"></i> CSV
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-download" data-type="pdf">
+                                        <i class="fas fa-file-pdf"></i> PDF
                                     </a>
                                     <button type="button" class="btn btn-secondary" onclick="window.print()">
                                         <i class="fas fa-print"></i> Print
                                     </button>
                                 </div>
                             </div>
+                            {{-- Search and filter stock --}}
                             <div class="col-md-6">
                                 <form action="{{ route(getRouteName('products.index')) }}" method="GET">
                                     @csrf
@@ -105,8 +117,8 @@
                                             Less than 10</option>
                                         <option value="10_100" {{ request('stock_range') == '10_100' ? 'selected' : '' }}>
                                             10 - 100</option>
-                                        <option value="100_200"
-                                            {{ request('stock_range') == '100_200' ? 'selected' : '' }}>100 - 200</option>
+                                        <option value="100_200" {{ request('stock_range') == '100_200' ? 'selected' : '' }}>
+                                            100 - 200</option>
                                         <option value="more_200"
                                             {{ request('stock_range') == 'more_200' ? 'selected' : '' }}>More than 200
                                         </option>
@@ -210,6 +222,96 @@
             setTimeout(function() {
                 $('.alert').fadeOut('slow');
             }, 15000);
+        });
+    </script>
+
+    {{-- export with Maatwebsite --}}
+    <script>
+        // Xử lý nút xóa sản phẩm (Ajax)
+        window.deleteUrl = "{{ route(getRouteName('products.index')) }}/";
+        $(function() {
+            $('.delete-product').on('click', function(e) {
+                e.preventDefault();
+                const productId = $(this).data('id');
+                const rowElement = $(this).closest('tr');
+                deleteRow(window.deleteUrl, rowElement, productId);
+            });
+            // Tự động ẩn thông báo sau 15 giây
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 15000);
+        });
+    </script>
+
+    {{-- Export download script --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(function() {
+            $('.btn-download').on('click', function(e) {
+                e.preventDefault();
+                let exportType = $(this).data('type'); // excel, csv
+                // Nếu exportType là pdf thì hiện thông báo tạm không hỗ trợ
+                if (exportType === 'pdf') {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Thông báo',
+                        text: 'Chức năng PDF tạm không hỗ trợ!'
+                    });
+                    return;
+                }
+                // Hiển thị thông báo export đang xử lý
+                Swal.fire({
+                    title: 'Đang xử lý export',
+                    html: 'Vui lòng đợi trong giây lát...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                // Gửi request export (GET request đến route "exports" với tham số format)
+                $.ajax({
+                    url: "{{ route(getRouteName('products.export')) }}",
+                    type: 'GET',
+                    data: {
+                        format: exportType
+                    },
+                    success: function(response) {
+                        // Khi nhận được download_url, bắt đầu polling để kiểm tra file đã sẵn sàng
+                        let downloadUrl = response.download_url;
+                        checkFileReady(downloadUrl);
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi export',
+                            text: xhr.responseJSON.message || 'Có lỗi xảy ra.'
+                        });
+                    }
+                });
+            });
+
+            // Hàm polling kiểm tra file tồn tại (sử dụng HEAD request)
+            function checkFileReady(downloadUrl) {
+                let polling = setInterval(function() {
+                    $.ajax({
+                        url: downloadUrl,
+                        type: 'HEAD',
+                        success: function() {
+                            clearInterval(polling);
+                            // Khi file sẵn sàng, tự động download
+                            window.location.href = downloadUrl;
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Export hoàn thành',
+                                text: 'File export đã sẵn sàng để tải về!'
+                            });
+                        },
+                        error: function() {
+                            console.log('File chưa sẵn sàng, thử lại sau 5 giây...');
+                        }
+                    });
+                }, 5000);
+            }
         });
     </script>
 @endpush

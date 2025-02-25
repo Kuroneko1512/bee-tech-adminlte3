@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\Debugbar\Facades\Debugbar;
+use App\Http\Controllers\ProductsExportController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\Admin\UserController;
@@ -48,9 +49,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         // Product Category
         Route::resource('categories', ProductCategoryController::class);
 
+        // Thêm route export cho products
+        Route::get('products/export', [ProductsExportController::class, 'exports'])->name('products.export');
+        Route::get('products/export/download', [ProductsExportController::class, 'downloadExport'])->name('products.export.download');
         // Product
         Route::resource('products', ProductController::class);
-        Route::get('products/download/{type}', [ProductController::class, 'download'])->name('products.download');
+        // Route::get('products/download/{type}', [ProductController::class, 'download'])->name('products.download');
+
+
 
         //Logout
         Route::post('logout', [AdminAuthController::class, 'logout'])->name('admins.logout');
@@ -98,28 +104,4 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::get('orders/{order}/download', [OrderController::class, 'download'])->name('orders.download');
     });
-});
-
-
-Route::get('/test-mail', function () {
-    try {
-        Debugbar::info('Testing mail connection...');
-
-        Mail::raw('Test email from ' . config('app.name'), function ($message) {
-            // $message->to('michaeltran041098@gmail.com')
-            $message->to('thomt1512@gmail.com')
-                ->subject('Test Mail Configuration');
-        });
-
-        Debugbar::success('Email sent successfully');
-        return 'Email sent successfully!';
-    } catch (\Exception $e) {
-        Debugbar::error('Mail Error: ' . $e->getMessage());
-        Debugbar::error($e->getTraceAsString());
-
-        return view('errors.mail-test', [
-            'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ]);
-    }
 });
