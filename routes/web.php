@@ -3,14 +3,16 @@
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Barryvdh\Debugbar\Facades\Debugbar;
-use App\Http\Controllers\ProductsExportController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Auth\UserAuthController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\ProductsExportController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 
 /*
@@ -37,7 +39,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
 
     //Route auth:guard admin
-    Route::middleware('admin')->group(function () {
+    Route::middleware('auth:admin')->group(function () {
 
         Route::get('index', function () {
             return view('admin.index');
@@ -70,6 +72,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::get('orders/{order}/download', [OrderController::class, 'download'])->name('orders.download');
+
+        //role and permission
+        Route::resource('roles', RoleController::class);
+        Route::resource('permissions', PermissionController::class);
     });
 });
 
@@ -77,12 +83,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('login', [UserAuthController::class, 'showLoginForm'])->name('users.login');
     Route::post('login', [UserAuthController::class, 'login'])->name('users.login.post');
+    Route::get('register', [UserAuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('register', [UserAuthController::class, 'register'])->name('register.post');
 
     // Password Reset Routes
     Route::get('forgot-password', [UserAuthController::class, 'showForgotForm'])->name('password.request');
     Route::post('forgot-password', [UserAuthController::class, 'sendResetLink'])->name('password.email');
     Route::get('reset-password', [UserAuthController::class, 'showResetForm'])->name('password.reset');
-    Route::post('reset-password', [UserAuthController::class, 'reset'])->name('password.update');
+    // Route::post('reset-password', [UserAuthController::class, 'reset'])->name('password.update');
     Route::middleware('auth')->group(function () {
 
         Route::get('dashboard', function () {

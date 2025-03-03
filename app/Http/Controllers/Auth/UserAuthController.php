@@ -90,7 +90,6 @@ class UserAuthController extends Controller
         return response()->json([
             'message' => 'Link đặt lại mật khẩu đã được gửi vào email của bạn.'
         ]);
-        
     }
 
     // Hiển thị form đặt lại mật khẩu
@@ -127,5 +126,33 @@ class UserAuthController extends Controller
 
         // Chuyển hướng về trang đăng nhập
         return redirect()->route('user.users.login')->with('status', 'Mật khẩu đã được đặt lại thành công!');
+    }
+
+
+    public function showRegisterForm()
+    {
+        return view('user.auth.register');
+    }
+
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'email' => 'required|email|max:100|unique:users',
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
+            'password' => 'required|min:6|confirmed'
+        ]);
+
+        $user = User::create([
+            'email' => $validated['email'],
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'password' => Hash::make($validated['password']),
+            'user_name' => Str::before($validated['email'], '@'),
+            'status' => 'active'
+        ]);
+
+        return redirect()->route('user.users.login')
+            ->with('success', 'Account created successfully! Please login.');
     }
 }
