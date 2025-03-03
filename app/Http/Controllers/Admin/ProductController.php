@@ -27,10 +27,17 @@ class ProductController extends Controller
     protected $uploadService;
     protected $deleteService;
 
+
     public function __construct(UploadService $uploadService, DeleteService $deleteService)
     {
         $this->uploadService = $uploadService;
         $this->deleteService = $deleteService;
+
+        // Quyền quản lý sản phẩm cơ bản
+        $this->middleware('permission:admin-product-view|user-product-view')->only(['index', 'show']);
+        $this->middleware('permission:admin-product-create|user-product-create')->only(['create', 'store']);
+        $this->middleware('permission:admin-product-update|user-product-update')->only(['edit', 'update']);
+        $this->middleware('permission:admin-product-delete|user-product-delete')->only('destroy');
     }
     /**
      * Display a listing of the resource.

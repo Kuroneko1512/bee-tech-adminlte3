@@ -25,11 +25,19 @@ class RoleAndPermissionSeeder extends Seeder
             );
         }
 
+        // Tạo permissions cho User
+        foreach (PermissionsEnum::userPermissions() as $permission) {
+            Permission::firstOrCreate(
+                ['name' => $permission],
+                ['guard_name' => 'web']
+            );
+        }
+
         // Tạo permissions cho Customer
         foreach (PermissionsEnum::customerPermissions() as $permission) {
             Permission::firstOrCreate(
                 ['name' => $permission],
-                ['guard_name' => 'api']
+                ['guard_name' => 'customer']
             );
         }
 
@@ -237,7 +245,7 @@ class RoleAndPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate(
             ['name' => RolesEnum::Customer->value],
-            ['guard_name' => 'api']
+            ['guard_name' => 'customer']
         );
         // Gán permissions cơ bản cho khách hàng
         $role->syncPermissions([
@@ -257,7 +265,7 @@ class RoleAndPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate(
             ['name' => RolesEnum::VipCustomer->value],
-            ['guard_name' => 'api']
+            ['guard_name' => 'customer']
         );
         // Gán permissions của customer thường + đặc quyền VIP
         $role->syncPermissions([
@@ -278,7 +286,7 @@ class RoleAndPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate(
             ['name' => RolesEnum::Wholesaler->value],
-            ['guard_name' => 'api']
+            ['guard_name' => 'customer']
         );
         // Gán permissions của customer + quyền bán sỉ
         $role->syncPermissions([

@@ -231,7 +231,8 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="province_id">Province</label>
-                                        <select name="province_id" id="province" class="form-control select2 select2-blue" data-dropdown-css-class="select2-navy" style="width: 100%;">
+                                        <select name="province_id" id="province" class="form-control select2 select2-blue"
+                                            data-dropdown-css-class="select2-navy" style="width: 100%;">
                                             <option value="">Chọn tỉnh/thành</option>
                                         </select>
                                         @error('province_id')
@@ -244,7 +245,9 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="district_id">District</label>
-                                        <select name="district_id" id="district" class="form-control select2 select2-blue" data-dropdown-css-class="select2-navy" style="width: 100%;">
+                                        <select name="district_id" id="district"
+                                            class="form-control select2 select2-blue"
+                                            data-dropdown-css-class="select2-navy" style="width: 100%;">
                                             <option value="">Chọn quận/huyện</option>
                                         </select>
                                         @error('district_id')
@@ -257,7 +260,9 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="commune_id">Commune</label>
-                                        <select name="commune_id" id="commune" class="form-control select2 select2-blue" data-dropdown-css-class="select2-navy" style="width: 100%;">
+                                        <select name="commune_id" id="commune"
+                                            class="form-control select2 select2-blue"
+                                            data-dropdown-css-class="select2-navy" style="width: 100%;">
                                             <option value="">Chọn xã/phường</option>
                                         </select>
                                         @error('commune_id')
@@ -268,7 +273,27 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <!-- Thêm field roles -->
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Roles</label>
+                                        <div class="select2-purple">
+                                            <select name="roles[]" class="select2" multiple="multiple"
+                                                data-placeholder="Select roles" style="width: 100%;">
+                                                @foreach ($roles as $role)
+                                                    <option value="{{ $role->name }}">
+                                                        {{ ucfirst($role->name) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @error('roles')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
                             <!-- Profile Picture -->
                             <h5 class="mt-4 mb-3">Profile Picture</h5>
                             <div class="form-group">

@@ -255,6 +255,29 @@
                                 </div>
                             </div>
 
+                            <h5 class="mt-4 mb-3">Role Information</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Roles</label>
+                                        <div class="select2-purple">
+                                            <select name="roles[]" class="select2" multiple="multiple"
+                                                data-placeholder="Select roles" style="width: 100%;">
+                                                @foreach ($roles as $role)
+                                                    <option value="{{ $role->name }}"
+                                                        {{ in_array($role->name, $userRoles) ? 'selected' : '' }}>
+                                                        {{ ucfirst($role->name) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        @error('roles')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Profile Picture -->
                             <h5 class="mt-4 mb-3">Profile Picture</h5>
                             <div class="form-group">

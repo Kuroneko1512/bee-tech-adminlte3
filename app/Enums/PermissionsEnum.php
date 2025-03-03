@@ -157,6 +157,29 @@ enum PermissionsEnum: string
     case CustomerCompareProducts = 'customer-compare-products'; // So sánh sản phẩm
     case CustomerNewsletterSubscribe = 'customer-newsletter-subscribe'; // Đăng ký/hủy đăng ký nhận tin
 
+        /* === USER PERMISSIONS === */
+
+        // Quản lý sản phẩm
+    case UserProductView = 'user-product-view';      // Xem sản phẩm
+    case UserProductCreate = 'user-product-create';   // Tạo sản phẩm
+    case UserProductUpdate = 'user-product-update';   // Cập nhật sản phẩm  
+    case UserProductDelete = 'user-product-delete';   // Xóa sản phẩm
+
+        // Quản lý đơn hàng
+    case UserOrderView = 'user-order-view';          // Xem đơn hàng
+    case UserOrderCreate = 'user-order-create';       // Tạo đơn hàng
+    case UserOrderUpdate = 'user-order-update';       // Cập nhật đơn hàng
+    case UserOrderCancel = 'user-order-cancel';       // Hủy đơn hàng
+
+        // Quản lý danh mục
+    case UserCategoryView = 'user-category-view';     // Xem danh mục
+    case UserCategoryCreate = 'user-category-create'; // Tạo danh mục
+    case UserCategoryUpdate = 'user-category-update'; // Cập nhật danh mục
+    case UserCategoryDelete = 'user-category-delete'; // Xóa danh mục
+
+        // Xem Role & Permission
+    case UserRoleView = 'user-role-view';            // Xem danh sách role
+    case UserPermissionView = 'user-permission-view'; // Xem danh sách permission
     public static function adminPermissions(): array
     {
         return [
@@ -290,6 +313,29 @@ enum PermissionsEnum: string
             self::CustomerWishlistManage->value,
             self::CustomerCompareProducts->value,
             self::CustomerNewsletterSubscribe->value,
+        ];
+    }
+
+    public static function userPermissions(): array
+    {
+        return [
+            self::UserProductView->value,
+            self::UserProductCreate->value,
+            self::UserProductUpdate->value,
+            self::UserProductDelete->value,
+
+            self::UserOrderView->value,
+            self::UserOrderCreate->value,
+            self::UserOrderUpdate->value,
+            self::UserOrderCancel->value,
+
+            self::UserCategoryView->value,
+            self::UserCategoryCreate->value,
+            self::UserCategoryUpdate->value,
+            self::UserCategoryDelete->value,
+
+            self::UserRoleView->value,
+            self::UserPermissionView->value
         ];
     }
 }

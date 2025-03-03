@@ -8,6 +8,7 @@ use App\Mail\UserMail;
 use Illuminate\Http\Request;
 use App\Traits\UploadFileTrait;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Jobs\ProcessCreateUpdateEmail;
@@ -19,13 +20,28 @@ use App\Http\Requests\User\UpdateUserRequest;
 class UserController extends Controller
 {
     use UploadFileTrait;
+
+    public function __construct()
+    {
+        // Quyền quản lý user cơ bản
+        $this->middleware('permission:admin-user-view')->only(['index', 'show']);
+        $this->middleware('permission:admin-user-create')->only(['create', 'store']);
+        $this->middleware('permission:admin-user-update')->only(['edit', 'update']);
+        $this->middleware('permission:admin-user-delete')->only('destroy');
+
+        // Quyền gán role cho user
+        $this->middleware('permission:admin-role-assign')->only(['create', 'store', 'edit', 'update']);
+    }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         // $users = User::latest('id')->paginate(15);
-        $query = User::query();
+        // $query = User::query();
+        $query = User::with('roles');
 
         if ($request->filled('keyword')) {
             $keyword = $request->keyword;
@@ -48,8 +64,10 @@ class UserController extends Controller
      */
     public function create()
     {
+        // Lấy danh sách roles có guard_name là 'web'
+        $roles = Role::where('guard_name', 'web')->get();
         Debugbar::info('Access Create User Form');
-        return view('admin.users.create');
+        return view('admin.users.create', compact('roles'));
     }
 
     /**
@@ -63,6 +81,7 @@ class UserController extends Controller
 
             Debugbar::info('Request Data:');
             Debugbar::info($data);
+
             $data['status'] = 'active';
             $data['flag_delete'] = 0;
             $data['avatar'] = $this->handleUploadFile($request, 'avatar', 'users');
@@ -71,9 +90,14 @@ class UserController extends Controller
             Debugbar::info($data);
 
             DB::enableQueryLog();
-
+            DB::beginTransaction();
             $user = User::create($data);
 
+            // Gán role nếu có trong request
+            if ($request->has('roles')) {
+                $user->assignRole($request->roles);
+            }
+            DB::commit();
             Debugbar::info('Query Log:');
             Debugbar::info(DB::getQueryLog());
 
@@ -86,6 +110,7 @@ class UserController extends Controller
             return redirect()->route(getRouteName('users.index'))
                 ->with('success', 'Thêm người dùng thành công');
         } catch (\Throwable $e) {
+            DB::rollBack();
             Debugbar::error('Store User Error:');
             Debugbar::error($e->getMessage());
 
@@ -108,9 +133,15 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // Lấy roles với guard web
+        $roles = Role::where('guard_name', 'web')->get();
+
+        // Lấy roles hiện tại của user
+        $userRoles = $user->roles->pluck('name')->toArray();
+
         Debugbar::info('Edit User Data:');
         Debugbar::info($user->toArray());
-        return view('admin.users.edit', compact('user', ));
+        return view('admin.users.edit', compact('user', 'roles', 'userRoles'));
     }
 
     /**
@@ -154,6 +185,11 @@ class UserController extends Controller
                 DB::enableQueryLog();
 
                 $user->update($data);
+
+                // Update roles if has permission
+                if ($request->has('roles')) {
+                    $user->syncRoles($request->roles);
+                }
 
                 Debugbar::info('Query executed:');
                 Debugbar::info(DB::getQueryLog());

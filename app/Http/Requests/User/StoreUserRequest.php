@@ -17,19 +17,21 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'email'         => [
-                                'required',
-                                'email',
-                                'max:100',
-                                Rule::unique('users')
-                            ],
+                'required',
+                'email',
+                'max:100',
+                Rule::unique('users')
+            ],
             'first_name'    => 'required|string|max:50',
             'last_name'     => 'required|string|max:50',
             'birthday'      => [
-                                'required',
-                                'date',
-                                'before:' . Carbon::now()->subYears(18)->format('Y-m-d'),
-                            ],
+                'required',
+                'date',
+                'before:' . Carbon::now()->subYears(18)->format('Y-m-d'),
+            ],
             'avatar'        => 'required|image|mimes:jpg,jpeg,png|max:3072',
+            'roles' => 'nullable|array',
+            'roles.*' => 'exists:roles,name,guard_name,web'
         ];
     }
 
@@ -55,6 +57,9 @@ class StoreUserRequest extends FormRequest
             'avatar.image'          => 'File phải là hình ảnh',
             'avatar.mimes'          => 'Ảnh phải có định dạng: jpg, jpeg, png',
             'avatar.max'            => 'Kích thước ảnh tối đa 3MB',
+
+            'roles.array'           => 'Phải là mảng',
+            'roles.*.exists'        => 'Role không tồn tại'
         ];
     }
 

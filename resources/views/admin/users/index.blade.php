@@ -89,16 +89,16 @@
                             <table id="example1" class="table table-bordered table-striped table-responsive table-hover">
                                 <thead>
                                     <tr>
-                                        <th>{{ __('ID') }}</th>
-                                        <th>{{ __('User Name') }}</th>
-                                        <th>{{ __('Email') }}</th>
-                                        <th>{{ __('Birthday') }}</th>
-                                        <th>{{ __('Name') }}</th>
-                                        {{-- <th>Last Name</th> --}}
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Create Date') }}</th>
-                                        <th>{{ __('Update Date') }}</th>
-                                        <th>{{ __('Action') }}</th>
+                                        <th width="5%">{{ __('ID') }}</th>
+                                        <th width="10%">{{ __('User Name') }}</th>
+                                        <th width="15%">{{ __('Email') }}</th>
+                                        <th width="8%">{{ __('Birthday') }}</th>
+                                        <th width="15%">{{ __('Name') }}</th>
+                                        <th width="10%">{{ __('Role') }}</th>
+                                        <th width="7%">{{ __('Status') }}</th>
+                                        <th width="10%">{{ __('Create Date') }}</th>
+                                        <th width="10%">{{ __('Update Date') }}</th>
+                                        <th width="10%">{{ __('Action') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -126,7 +126,13 @@
                                             <span class="ml-2">{{ $user->last_name }} {{ $user->first_name }}</span>
                                         </a>
                                     </td> --}}
-                                            {{-- <td>Last Name</td> --}}
+                                            <td>
+                                                @forelse($user->roles as $role)
+                                                    <span class="badge badge-info">{{ $role->name }}</span>
+                                                @empty
+                                                    <span class="badge badge-secondary">No Role Assigned</span>
+                                                @endforelse
+                                            </td>
                                             <td>
                                                 @if ($user->status == 'active')
                                                     <span class="badge badge-pill badge-success">{{ __('Active') }}</span>
@@ -149,16 +155,16 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th>{{ __('ID') }}</th>
-                                        <th>{{ __('User Name') }}</th>
-                                        <th>{{ __('Email') }}</th>
-                                        <th>{{ __('Birthday') }}</th>
-                                        <th>{{ __('Name') }}</th>
-                                        {{-- <th>Last Name</th> --}}
-                                        <th>{{ __('Status') }}</th>
-                                        <th>{{ __('Create Date') }}</th>
-                                        <th>{{ __('Update Date') }}</th>
-                                        <th>{{ __('Action') }}</th>
+                                        <th width="5%">{{ __('ID') }}</th>
+                                        <th width="10%">{{ __('User Name') }}</th>
+                                        <th width="15%">{{ __('Email') }}</th>
+                                        <th width="8%">{{ __('Birthday') }}</th>
+                                        <th width="15%">{{ __('Name') }}</th>
+                                        <th width="10%">{{ __('Role') }}</th>
+                                        <th width="7%">{{ __('Status') }}</th>
+                                        <th width="10%">{{ __('Create Date') }}</th>
+                                        <th width="10%">{{ __('Update Date') }}</th>
+                                        <th width="10%">{{ __('Action') }}</th>
                                     </tr>
                                 </tfoot>
                             </table>

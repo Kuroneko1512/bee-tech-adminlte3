@@ -100,9 +100,12 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         // Product Category
         Route::resource('categories', ProductCategoryController::class);
 
+        // Thêm route export cho products
+        Route::get('products/export', [ProductsExportController::class, 'exports'])->name('products.export');
+        Route::get('products/export/download', [ProductsExportController::class, 'downloadExport'])->name('products.export.download');
         // Product
         Route::resource('products', ProductController::class);
-        Route::get('products/download/{type}', [ProductController::class, 'download'])->name('products.download');
+        // Route::get('products/download/{type}', [ProductController::class, 'download'])->name('products.download');
 
         //Logout
         Route::post('logout', [UserAuthController::class, 'logout'])->name('users.logout');

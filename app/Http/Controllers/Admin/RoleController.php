@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\RolesEnum;
 use Illuminate\Http\Request;
 use App\Enums\PermissionsEnum;
 use Spatie\Permission\Models\Role;
@@ -10,6 +11,21 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
+    // Cách 1 dùng trong controller 
+    protected $specialRoles;
+
+    public function __construct()
+    {
+        $this->specialRoles = [
+            RolesEnum::SuperAdmin->value,
+            RolesEnum::Admin->value
+        ];
+
+        $this->middleware('permission:admin-role-view')->only(['index', 'show']);
+        $this->middleware('permission:admin-role-create')->only(['create', 'store']);
+        $this->middleware('permission:admin-role-update')->only(['edit', 'update']);
+        $this->middleware('permission:admin-role-delete')->only(['destroy']);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -94,6 +110,23 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        // cách 1
+        // Lấy user hiện tại từ guard admin
+        $admin = Auth::guard('admin')->user();
+        // Kiểm tra nếu là super-admin
+        if ($admin->roles->contains('name', RolesEnum::SuperAdmin->value)) {
+            // Super admin không thể sửa chính role super-admin
+            if ($role->name === RolesEnum::SuperAdmin->value) {
+                abort(403, 'Không thể sửa role super-admin');
+            }
+        } else {
+            // Admin thường không thể sửa các role đặc biệt
+            if (in_array($role->name, $this->specialRoles)) {
+                abort(403, 'Không thể sửa các role đặc biệt');
+            }
+        }
+
+        // Logic lấy data cho form edit
         $guards = collect(config('auth.guards'))
             ->reject(function ($guard) {
                 return $guard['driver'] === 'sanctum';
@@ -122,6 +155,23 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+        // cách 1
+        // Lấy user hiện tại từ guard admin
+        $admin = Auth::guard('admin')->user();
+        // Kiểm tra nếu là super-admin
+        if ($admin->roles->contains('name', RolesEnum::SuperAdmin->value)) {
+            // Super admin không thể sửa chính role super-admin
+            if ($role->name === RolesEnum::SuperAdmin->value) {
+                abort(403, 'Không thể sửa role super-admin');
+            }
+        } else {
+            // Admin thường không thể sửa các role đặc biệt
+            if (in_array($role->name, $this->specialRoles)) {
+                abort(403, 'Không thể sửa các role đặc biệt');
+            }
+        }
+
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
             'guard_name' => 'required|string|in:' . implode(',', array_keys(config('auth.guards'))),
@@ -145,6 +195,29 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        // cách 1
+        // Lấy user hiện tại từ guard admin
+        $admin = Auth::guard('admin')->user();
+        // Kiểm tra nếu là super-admin
+        if ($admin->roles->contains('name', RolesEnum::SuperAdmin->value)) {
+            // Super admin không thể sửa chính role super-admin
+            if ($role->name === RolesEnum::SuperAdmin->value) {
+                abort(403, 'Không thể sửa role super-admin');
+            }
+        } else {
+            // Admin thường không thể sửa các role đặc biệt
+            if (in_array($role->name, $this->specialRoles)) {
+                abort(403, 'Không thể sửa các role đặc biệt');
+            }
+        }
+
+        // Kiểm tra role có đang được sử dụng không
+        if ($role->users()->exists()) {
+            abort(403, 'Không thể xóa role đang được gán cho user');
+        }
+
+        $role->delete();
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role deleted successfully');
     }
 }
