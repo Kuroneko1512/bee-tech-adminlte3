@@ -30,7 +30,7 @@ class UserController extends Controller
         $this->middleware('permission:admin-user-delete')->only('destroy');
 
         // Quyền gán role cho user
-        $this->middleware('permission:admin-role-assign')->only(['create', 'store', 'edit', 'update']);
+        // $this->middleware('permission:admin-role-assign')->only(['create', 'store', 'edit', 'update']);
     }
 
 
@@ -76,7 +76,6 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         try {
-
             $data = $request->all();
 
             Debugbar::info('Request Data:');
@@ -93,8 +92,12 @@ class UserController extends Controller
             DB::beginTransaction();
             $user = User::create($data);
 
+            // Gán role "user" mặc định
+            $user->assignRole('user');
+
             // Gán role nếu có trong request
             if ($request->has('roles')) {
+                $this->authorize('assignRoles', Role::class);  // Kiểm tra quyền gán role
                 $user->assignRole($request->roles);
             }
             DB::commit();
@@ -188,6 +191,7 @@ class UserController extends Controller
 
                 // Update roles if has permission
                 if ($request->has('roles')) {
+                    $this->authorize('assignRoles', Role::class); // Kiểm tra quyền gán role
                     $user->syncRoles($request->roles);
                 }
 

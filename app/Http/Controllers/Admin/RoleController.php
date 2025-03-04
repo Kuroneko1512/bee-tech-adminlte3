@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
+    /*
+
     // Cách 1 dùng trong controller 
     protected $specialRoles;
 
@@ -26,17 +28,24 @@ class RoleController extends Controller
         $this->middleware('permission:admin-role-update')->only(['edit', 'update']);
         $this->middleware('permission:admin-role-delete')->only(['destroy']);
     }
+    // end cách 1, cách 2 không dùng đến __constructs
+    
+    */
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        // cách 2 Policy 
+        $this->authorize('viewAny', Role::class);
         // Lấy danh sách roles kèm số lượng users và permissions
         $roles = Role::select('roles.*')
             ->selectRaw('(SELECT COUNT(*) FROM model_has_roles WHERE model_has_roles.role_id = roles.id) as total_users')
             ->with(['permissions' => function ($query) {
                 $query->select('permissions.id', 'permissions.name');
             }])
+            ->orderBy('guard_name')
             ->get();
 
         // dd($roles);
@@ -52,6 +61,9 @@ class RoleController extends Controller
      */
     public function create()
     {
+        // cách 2 Policy
+        $this->authorize('create', Role::class);
+
         // Lấy tự động các guard từ config auth.php, bỏ sanctum vì dùng passport( customer )
         $guards = collect(config('auth.guards'))
             ->reject(function ($guard) {
@@ -62,7 +74,9 @@ class RoleController extends Controller
 
         // Nhóm permissions theo guard name
         $permissions = collect(PermissionsEnum::cases())->groupBy(function ($permission) {
-            return explode('-', $permission->value)[0]; // Lấy phần đầu tiên làm guard name
+            $guardName = explode('-', $permission->value)[0]; // Lấy phần đầu tiên làm guard name
+            // Thay đổi "user" thành "web"
+            return $guardName === 'user' ? 'web' : $guardName;
         })->map(function ($guardPermissions) {
             return $guardPermissions->groupBy(function ($permission) {
                 $parts = explode('-', $permission->value);
@@ -70,6 +84,11 @@ class RoleController extends Controller
                 return isset($parts[1]) ? $parts[1] : 'other';
             });
         });
+
+        // dd([
+        //     'guards' => $guards,
+        //     'permissions' => $permissions,
+        // ]);
 
         return view('admin.role.create', compact('guards', 'permissions'));
     }
@@ -79,6 +98,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        // cách 2 Policy
+        $this->authorize('create', Role::class);
+
+
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name',
             'guard_name' => 'required|string|in:' . implode(',', array_keys(config('auth.guards'))),
@@ -110,6 +133,7 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
+        /*
         // cách 1
         // Lấy user hiện tại từ guard admin
         $admin = Auth::guard('admin')->user();
@@ -125,6 +149,10 @@ class RoleController extends Controller
                 abort(403, 'Không thể sửa các role đặc biệt');
             }
         }
+        */
+
+        /// cách 2 Policy
+        $this->authorize('update', $role);
 
         // Logic lấy data cho form edit
         $guards = collect(config('auth.guards'))
@@ -136,7 +164,8 @@ class RoleController extends Controller
 
         $permissions = collect(PermissionsEnum::cases())
             ->groupBy(function ($permission) {
-                return explode('-', $permission->value)[0];
+                $guardName = explode('-', $permission->value)[0]; // Lấy phần đầu tiên làm guard name
+                return $guardName === 'user' ? 'web' : $guardName; // Thay đổi "user" thành "web"
             })
             ->map(function ($guardPermissions) {
                 return $guardPermissions->groupBy(function ($permission) {
@@ -155,6 +184,7 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
+        /*
         // cách 1
         // Lấy user hiện tại từ guard admin
         $admin = Auth::guard('admin')->user();
@@ -171,6 +201,10 @@ class RoleController extends Controller
             }
         }
 
+        */
+
+        // cách 2 Policy
+        $this->authorize('update', $role);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
@@ -195,6 +229,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        /*
         // cách 1
         // Lấy user hiện tại từ guard admin
         $admin = Auth::guard('admin')->user();
@@ -215,6 +250,11 @@ class RoleController extends Controller
         if ($role->users()->exists()) {
             abort(403, 'Không thể xóa role đang được gán cho user');
         }
+
+        */
+
+        // cách 2 Policy
+        $this->authorize('delete', $role);
 
         $role->delete();
         return redirect()->route('admin.roles.index')

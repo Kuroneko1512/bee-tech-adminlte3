@@ -212,7 +212,7 @@ class RoleAndPermissionSeeder extends Seeder
             ['name' => RolesEnum::CustomerService->value],
             ['guard_name' => 'admin']
         );
-        // Gán permissions liên quan đến CSKH
+        // Gán permissions liên quan đến chăm sóc khách hàng
         $role->syncPermissions([
             PermissionsEnum::AdminCustomerSupport->value,
             PermissionsEnum::AdminCustomerChat->value,

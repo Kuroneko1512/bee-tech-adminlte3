@@ -27,10 +27,11 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th width="5%">ID</th>
-                                    <th width="20%">Role Name</th>
-                                    <th width="45%">Permissions</th>
-                                    <th width="15%">Users Count</th>
-                                    <th width="15%">Actions</th>
+                                    <th width="15%">Role Name</th>
+                                    <th width="15%">Guard Name</th>
+                                    <th width="40%">Permissions</th>
+                                    <th width="10%">Users Count</th>
+                                    <th width="10%">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -48,6 +49,27 @@
                                         </td>
                                         <td>
                                             @php
+                                                $badgeColor = 'primary'; // Mặc định màu badge
+                                                switch ($role->guard_name) {
+                                                    case 'web':
+                                                        $badgeColor = 'success'; // Màu cho guard 'web'
+                                                        break;
+                                                    case 'admin':
+                                                        $badgeColor = 'info'; // Màu cho guard 'admin'
+                                                        break;
+                                                    case 'api':
+                                                        $badgeColor = 'warning'; // Màu cho guard 'api'
+                                                        break;
+                                                    // Thêm các guard name khác nếu cần
+                                                    // default:
+                                                    //     $badgeColor = 'secondary'; // Màu mặc định cho các guard khác
+                                                    //     break;
+                                                }
+                                            @endphp
+                                            <span class="badge badge-{{ $badgeColor }}">{{ $role->guard_name }}</span>
+                                        </td>
+                                        <td>
+                                            @php
                                                 $maxPermissionsToShow = 5; // Số lượng permission tối đa hiển thị
                                                 $totalPermissions = count($role->permissions);
                                             @endphp
@@ -62,8 +84,13 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="badge badge-info">
-                                                {{ $role->total_users ?? 0 }} users
+                                            @php
+                                                $userCount = $role->total_users ?? 0; // Lấy số lượng người dùng
+                                                $badgeColor = $userCount > 0 ? 'success' : 'danger'; // Màu cho badge
+                                            @endphp
+                                            <span class="badge badge-{{ $badgeColor }}">
+                                                {{ $userCount }} {{ $userCount === 1 ? 'user' : 'users' }}
+                                                <!-- Đổi số nhiều nếu cần -->
                                             </span>
                                         </td>
                                         <td>

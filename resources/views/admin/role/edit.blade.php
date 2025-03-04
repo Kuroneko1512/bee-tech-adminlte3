@@ -28,12 +28,12 @@
                             <div class="form-group">
                                 <label for="guardName">Guard Name <span class="text-danger">*</span></label>
                                 <select name="guard_name" class="form-control @error('guard_name') is-invalid @enderror"
-                                    required>
+                                    id="guardSelect" required onchange="filterPermissions()">
                                     <option value="">Select Guard</option>
                                     @foreach ($guards as $guard)
                                         <option value="{{ $guard }}"
                                             {{ old('guard_name', $role->guard_name) == $guard ? 'selected' : '' }}>
-                                            {{ ucfirst($guard) }}
+                                            {{ ucfirst($guard) === 'User' ? 'Web' : ucfirst($guard) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -49,28 +49,31 @@
                         <div class="card">
                             <div class="card-body">
                                 @foreach ($permissions as $guard => $groupPermissions)
-                                    <h5 class="border-bottom pb-2">{{ ucfirst($guard) }} Permissions</h5>
-                                    <div class="row">
-                                        @foreach ($groupPermissions as $group => $permissions)
-                                            <div class="col-md-2">
-                                                <div class="permission-group mb-4">
-                                                    <h6 class="font-weight-bold">{{ ucfirst($group) }}</h6>
-                                                    @foreach ($permissions as $permission)
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" name="permissions[]"
-                                                                value="{{ $permission->value }}"
-                                                                class="custom-control-input"
-                                                                id="perm_{{ $permission->value }}"
-                                                                {{ in_array($permission->value, old('permissions', $rolePermissions)) ? 'checked' : '' }}>
-                                                            <label class="custom-control-label text-sm"
-                                                                for="perm_{{ $permission->value }}">
-                                                                {{ ucwords(str_replace([$guard . '-', '-'], ['', ' '], $permission->value)) }}
-                                                            </label>
-                                                        </div>
-                                                    @endforeach
+                                    <div class="permissions-group" data-guard="{{ $guard }}" style="display: none;">
+                                        <h5 class="border-bottom pb-2">
+                                            {{ ucfirst($guard) === 'Web' ? 'User' : ucfirst($guard) }} Permissions</h5>
+                                        <div class="row">
+                                            @foreach ($groupPermissions as $group => $permissions)
+                                                <div class="col-md-2">
+                                                    <div class="permission-group mb-4">
+                                                        <h6 class="font-weight-bold">{{ ucfirst($group) }}</h6>
+                                                        @foreach ($permissions as $permission)
+                                                            <div class="custom-control custom-checkbox">
+                                                                <input type="checkbox" name="permissions[]"
+                                                                    value="{{ $permission->value }}"
+                                                                    class="custom-control-input"
+                                                                    id="perm_{{ $permission->value }}"
+                                                                    {{ in_array($permission->value, old('permissions', $rolePermissions)) ? 'checked' : '' }}>
+                                                                <label class="custom-control-label text-sm"
+                                                                    for="perm_{{ $permission->value }}">
+                                                                    {{ ucwords(str_replace([$guard . '-', '-'], ['', ' '], $permission->value)) }}
+                                                                </label>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
+                                            @endforeach
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>
@@ -91,4 +94,60 @@
             </form>
         </div>
     </div>
+
+    {{-- <script>
+        function filterPermissions() {
+            const selectedGuard = document.getElementById('guardSelect').value;
+            const permissionGroups = document.querySelectorAll('.permissions-group');
+
+            permissionGroups.forEach(group => {
+                if (selectedGuard === "" || group.getAttribute('data-guard') === selectedGuard) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+
+        // Gọi hàm để hiển thị tất cả permissions khi trang được tải
+        window.onload = filterPermissions;
+    </script> --}}
+    <script>
+        let previousGuard = ''; // Biến để lưu guard name trước đó
+
+        function filterPermissions() {
+            const selectedGuard = document.getElementById('guardSelect').value;
+            const permissionGroups = document.querySelectorAll('.permissions-group');
+
+            // Hiển thị hoặc ẩn các nhóm permissions
+            permissionGroups.forEach(group => {
+                if (selectedGuard === "" || group.getAttribute('data-guard') === selectedGuard) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+
+        // Gọi hàm để hiển thị tất cả permissions khi trang được tải
+        window.onload = function() {
+            filterPermissions(); // Hiển thị permissions khi trang được tải
+            previousGuard = document.getElementById('guardSelect').value; // Cập nhật guard name trước đó
+        };
+
+        // Thêm sự kiện khi người dùng thay đổi guard name
+        document.getElementById('guardSelect').addEventListener('change', function() {
+            const selectedGuard = this.value;
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+            checkboxes.forEach(checkbox => {
+                // Bỏ chọn các checkbox không thuộc guard hiện tại
+                if (previousGuard && checkbox.dataset.guard !== selectedGuard) {
+                    checkbox.checked = false; // Bỏ chọn các checkbox không thuộc guard hiện tại
+                }
+            });
+
+            previousGuard = selectedGuard; // Cập nhật guard name trước đó
+        });
+    </script>
 @endsection
